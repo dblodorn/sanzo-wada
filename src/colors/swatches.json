@@ -1,0 +1,14 @@
+{
+ "swatches": [
+  {
+    "name": "hermosa pink",
+    "cmyk": [ 0, 30, 6, 0 ],
+    "combinations": [ 176, 227, 273 ]
+  },
+  {
+    "name": "corinthian pink",
+    "cmyk": [ 0, 35, 15, 0 ],
+    "combinations": [ 27, 43, 87, 97, 128, 169, 174, 206, 246, 254, 264, 342 ]
+  }
+ ]
+}
