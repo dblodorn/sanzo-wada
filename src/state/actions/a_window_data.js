@@ -6,6 +6,13 @@ function resizeData (resize_state) {
   }
 }
 
+const fontsLoaded = (bool) => {
+  return {
+    type: 'FONTS_LOADED',
+    bool
+  }
+}
+
 const setResizeState = () => {
   return (dispatch) => {
     dispatch(resizeData({
@@ -17,5 +24,6 @@ const setResizeState = () => {
 
 // EXPORTS
 export {
-  setResizeState
+  setResizeState,
+  fontsLoaded
 }

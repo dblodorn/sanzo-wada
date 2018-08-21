@@ -24,19 +24,15 @@
   "colors": {
     "white": "#ffffff",
     "black": "#180c06",
-    "blue": "#11069F",
-    "dk_blue": "#00205B",
-    "lt_blue": "#0000FF",
-    "mint": "#A2E4B8",
-    "powder": "#A7C6ED",
-    "pink": "#FF7276"
+    "grey": "#dbdbdb"
   },
   "fonts": {
-    "sans": "Platform, system-ui, sans-serif",
+    "sans": "'fff-regular', system-ui, sans-serif",
+    "italic": "'fff-italic', system-ui, sans-serif",
     "sizes": {
-      "giant": "40vmin",
-      "giant_sm": "25vmin",
-      "medium": "15vmin"
+      "lg": "3rem",
+      "med": "2rem",
+      "sm": "1.75rem"
     }
   },
   "global": {

@@ -6,3 +6,12 @@ export function resizeState(state = {}, action) {
       return state
   }
 }
+
+export function fontState(state = false, action) {
+  switch (action.type) {
+    case 'FONTS_LOADED':
+      return action.bool
+    default:
+      return state
+  }
+}

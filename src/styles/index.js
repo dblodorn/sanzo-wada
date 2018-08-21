@@ -149,11 +149,9 @@ const absoluteCentered = css`
 
 // DOM NODES
 const Section = styled.section`
-  ${maxWidth};
   ${flexColumn};
+  width: 100%;
   display: flex;
-  padding-top: ${spacing.single_pad};
-  padding-bottom: ${spacing.single_pad};
 `
 
 // STYLE UTILS
@@ -173,20 +171,16 @@ const sansFont = css`
 `
 
 const bigType = css`
-  font-size: ${fonts.sizes.giant_sm};
+  font-size: ${fonts.sizes.lg};
   font-family: ${fonts.sans};
-  line-height: .8;
+  line-height: 1.25;
   font-weight: bold;
-  ${media.medium`
-    font-size: ${fonts.sizes.giant};
-  `}
 `
 
 const mediumType = css`
-  font-size: ${fonts.sizes.medium};
+  font-size: ${fonts.sizes.med};
   font-family: ${fonts.sans};
-  line-height: 1;
-  font-weight: bold;
+  line-height: 1.35;
 `
 
 const buttonInit = css`

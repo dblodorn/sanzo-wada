@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom'
 import { createStore, compose, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-
+import WebFont from 'webfontloader'
 import throttle from 'lodash/throttle'
 import mixin from 'lodash/mixin'
 import _ from 'lodash/wrapperLodash'
 
 import rootReducer from './state/reducers'
-import { setResizeState } from './state/actions'
+import { setResizeState, fontsLoaded, colorData } from './state/actions'
 import App from './App'
 
 mixin(_, {
@@ -31,6 +31,17 @@ const resizeHandler = () => {
   store.dispatch(setResizeState())
 }
 
+// Load Fonts
+WebFont.load({
+  custom: {
+    families: ['fff-regular', 'fff-italic'],
+    urls: ['/assets/fonts.css']
+  },
+  active: () => {
+    store.dispatch(fontsLoaded(true))
+  }
+})
+store.dispatch(colorData())
 resizeHandler()
 // ADD EVENT LISTENERS
 window.addEventListener('resize', _.throttle(resizeHandler, 50))

@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'fff-regular';
+  src: url('/assets/fonts/fff-Regular_gdi.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'fff-italic';
+  src: url('/assets/fonts/fff-RegularItalic_gdi.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
