@@ -1,7 +1,7 @@
 {
   "breakpoints": {
     "mobile": 0,
-    "desktop": 1140
+    "desktop": 1240
   },
   "transitions": {
     "stiffness_fast": 300,
@@ -15,24 +15,23 @@
   },
   "spacing": {
     "micro_pad": ".75rem",
-    "single_pad": "1rem",
-    "double_pad": "2rem",
-    "big_pad": "6rem",
-    "home_indent": "15vw",
-    "medium_left": "3rem"
+    "single_pad": "1.5rem",
+    "double_pad": "3rem",
+    "big_pad": "6rem"
   },
   "colors": {
     "white": "#ffffff",
-    "black": "#180c06",
-    "grey": "#dbdbdb"
+    "black": "#1b3644",
+    "grey": "#dbdbdb",
+    "med_grey": "#939393"
   },
   "fonts": {
     "sans": "'fff-regular', system-ui, sans-serif",
     "italic": "'fff-italic', system-ui, sans-serif",
     "sizes": {
-      "lg": "3rem",
+      "lg": "10vmin",
       "med": "2rem",
-      "sm": "1.75rem"
+      "sm": "1.25rem"
     }
   },
   "global": {

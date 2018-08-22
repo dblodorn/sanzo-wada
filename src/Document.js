@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Head, AgeVerification } from './components'
+import React, { Component, Fragment } from 'react'
 import styled, { injectGlobal } from 'styled-components'
+import { HeaderLayout } from './components'
 import { media, flexColumn } from './styles'
 import { colors, fonts } from './styles/theme.json'
 
@@ -13,9 +13,12 @@ class Document extends Component {
   }
   render() {
     return (
-      <Main>
-        {this.props.children}
-      </Main>
+      <Fragment>
+        <HeaderLayout/>
+        <Main>
+          {this.props.children}
+        </Main>
+      </Fragment>
     )
   }
 }
@@ -49,7 +52,6 @@ injectGlobal`
   }
   body {
     font-size: 16px;
-    overflow-x: hidden;
     width: 100vw;
     min-height: 100vh;
     margin: 0;
@@ -84,7 +86,6 @@ const Main = styled.main`
   align-items: center;
   width: 100vw;
   min-height: 100vh;
-  overflow: hidden;
   position: relative;
   z-index: 2;
   ${media.medium`

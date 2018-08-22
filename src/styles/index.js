@@ -9,27 +9,13 @@ const media = {
     }
   `,
   medium: (...args) => css`
-    @media (min-width: ${breakpoints.desktop}px) {
+    @media (max-width: ${breakpoints.desktop}px) {
       ${ css(...args) }
     }
   `
 }
 
 // Animation
-const spin = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
-
-const animationRotate = css`
-  animation: ${spin} 700ms linear 0s infinite normal;
-  animation-fill-mode: forwards;
-`
-
 const fadesIn = keyframes`
   0% {
     opacity: 0;
@@ -109,27 +95,6 @@ const flexRowSpaceBetween = css`
   justify-content: space-between;
 `
 
-const largeWrapper = css`
-  position: relative;
-  height: auto;
-  transform: translateY(-2vh);
-  padding: 2vh 0 12vh;
-  padding-left: 4vmin;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  z-index: 0;
-  pointer-events: none;
-  top: 25vmin;
-  z-index: 1;
-  ${media.medium`
-    position: fixed;
-    height: 108vh;
-    top: 0;
-  `}
-`
-
 // LAYOUT UTILS
 const maxWidth = css`
   width: 100%;
@@ -183,6 +148,21 @@ const mediumType = css`
   line-height: 1.35;
 `
 
+const smallType = css`
+  font-size: ${fonts.sizes.sm};
+  font-family: ${fonts.sans};
+  line-height: .8;
+`
+
+const H1 = styled.h2`
+  ${bigType};
+  max-width: 100rem;
+`
+
+const H2 = styled.h2`
+  ${smallType};
+`
+
 const buttonInit = css`
   -webkit-tap-highlight-color: rgba(255,255,255,0);
   border: 0;
@@ -191,33 +171,6 @@ const buttonInit = css`
   appearance: none;
   cursor: pointer;
   display: block;
-`
-
-const SocialLink = styled.a`
-  width: 4rem;
-  height: 4rem;
-  position: relative;
-  display: inline-flex;
-  margin-right: 2vmin;
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-  ${media.medium`
-    width: 4.5vmin;
-    height: 4.5vmin;
-  `}
-`
-
-const LogoWrapperFixed = styled.div`
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  z-index: 9000;
-  ${media.medium`
-    top: 6vmin;
-    right: 4vmin;
-  `}
 `
 
 export {
@@ -233,14 +186,13 @@ export {
   Section,
   absoluteCentered,
   transitionAll,
-  animationRotate,
   animationPopIn,
   media,
   bigType,
-  buttonInit,
   mediumType,
-  largeWrapper,
-  animationFadeIn,
-  SocialLink,
-  LogoWrapperFixed
+  buttonInit,
+  H2,
+  H1,
+  smallType,
+  animationFadeIn
 }
