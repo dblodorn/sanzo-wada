@@ -1,4 +1,11 @@
 import chroma from 'chroma-js'
+import lowerCase from 'lodash/lowerCase'
+import mixin from 'lodash/mixin'
+import _ from 'lodash/wrapperLodash'
+
+mixin(_, {
+  lowerCase: lowerCase
+})
 
 const cv = (input) => {
   let arr = []
@@ -9,6 +16,10 @@ const cv = (input) => {
   return arr
 }
 
+const returnSlug = (title) => {
+  return title.replace(/\s+/g, '-').toLowerCase()
+}
+
 export default (swatches) => {
   let colorList = []
   swatches.forEach((e, i) => {
@@ -17,6 +28,7 @@ export default (swatches) => {
     const colorObject = {
       "index": i + 1,
       "name": e.name,
+      "slug": returnSlug(e.name),
       "cmyk_array": e.cmyk,
       "cmyk": `C:${e.cmyk[0]} / M:${e.cmyk[1]} / Y:${e.cmyk[2]} / K:${e.cmyk[3]}`,
       "rgb": `R:${rgb[0]} / G:${rgb[1]} / B:${rgb[2]}`,
