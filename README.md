@@ -8,7 +8,7 @@ Major thanks to [@gka](https://github.com/gka) for authoring the amazing color m
 
 -----
 
-348 color combinations originated by Sanzo Wada(1883-1967) who,in that time of increasingly avant-grade and diversified use of color,was quick to focus on the importance of color and laid the foundation for contemporary color research. Sanzo Wada was active as an artist,art school instructor,costume designer for the movies and the theater, and kimono and fashion designer who employed his extensive and versatile talents to do innovative work that centered primarily on visual perception and form.
+348 color combinations originated by Sanzo Wada (1883-1967) who, in that time of increasingly avant-grade and diversified use of color, was quick to focus on the importance of color and laid the foundation for contemporary color research. Sanzo Wada was active as an artist, art school instructor, costume designer for the movies and the theater, and kimono and fashion designer who employed his extensive and versatile talents to do innovative work that centered primarily on visual perception and form.
 
 ![alt-text](https://dmbk.nyc3.digitaloceanspaces.com/dmbk-images/gh/s-wada-color-combinations.jpg "SANZO WADA - DICTIONARY OF COLOR COMBINATIONS")
 

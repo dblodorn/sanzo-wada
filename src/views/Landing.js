@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable } from './../components'
-import { flexRow, StyledButton } from './../styles'
+import { flexRow, StyledButton, media } from './../styles'
 import { colors, spacing, shared } from './../styles/theme.json'
 
 class Landing extends Component {
@@ -12,12 +12,12 @@ class Landing extends Component {
     }
   }
 
-  _setTable(e) {
+  _setTable() {
     this.setState({ table: true })
 
   }
 
-  _setSwatch(e) {
+  _setSwatch() {
     this.setState({ table: false })
   }
 
@@ -69,4 +69,7 @@ const ButtonWrapper = styled.div`
       margin-right: ${spacing.single_pad};
     }
   }
+  ${media.small`
+    margin: auto;
+  `}
 `

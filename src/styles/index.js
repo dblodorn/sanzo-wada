@@ -143,6 +143,10 @@ const bigType = css`
   font-weight: bold;
   word-spacing: .5vmin;
   letter-spacing: .125vmin;
+  padding-right: ${spacing.double_pad};
+  ${ media.small`
+    font-size: 4rem;
+  `}
 `
 
 const mediumType = css`
@@ -173,12 +177,17 @@ const H1 = styled.h2`
 
 const H2 = styled.h2`
   ${smallType};
+  ${media.small`
+    width: 100%;
+    text-align: center;
+  `}
 `
 
 const P = styled.p`
   ${mediumType};
   padding-bottom: ${spacing.single_pad};
   max-width: ${shared.max_width};
+  padding-right: ${spacing.double_pad};
   &:last-child {
     padding-bottom: 0;
   }
@@ -197,22 +206,35 @@ const buttonInit = css`
 const StyledButton = styled.button`
   ${buttonInit};
   ${microType};
-  ${flexRowCenteredVert};
+  ${flexRowCenteredAll};
   color: ${colors.med_grey};
   text-transform: uppercase;
   height: 3rem;
-  padding: 0 2rem;
   background-color: ${chroma(colors.grey).darken(.2)};
   color: ${colors.white};
   border-radius: 1.5rem;
   will-change: background-color;
   transition: background-color 250ms ease;
+  width: 11rem;
   span {
     padding-top: 2px;
   }
   &:hover {
     background-color: ${chroma(colors.grey).darken(1.5)};
   }
+  &.active {
+    background-color: ${chroma(colors.grey).darken(.5)};
+  }
+  ${media.small`
+    background-color: ${chroma(colors.grey).darken(1.125)}; 
+    width: 12rem;
+    span {
+      padding-top: 1px;
+    }
+    &.active {
+      background-color: ${chroma(colors.grey).darken(1.5)};
+    }
+  `}
 `
 
 export {
