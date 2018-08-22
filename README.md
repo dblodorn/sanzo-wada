@@ -4,7 +4,7 @@
 
 Due to the fact that it doesn't exist (to my knowledge) I thought it would be great to have an interactive version of this amazing book. Conversion of CMYK colors to RGB / HEX is difficult - so not all are faithful to the printed plates in the book. Therefore this can be used as a companion to the print edition.
 
-Major thanks to @gka for authoring the amazing color manipulation library: [chroma.js](http://gka.github.io/chroma.js/)
+Major thanks to [@gka](https://github.com/gka) for authoring the amazing color manipulation library: [chroma.js](http://gka.github.io/chroma.js/)
 
 -----
 
@@ -13,4 +13,5 @@ Major thanks to @gka for authoring the amazing color manipulation library: [chro
 ![alt-text](https://dmbk.nyc3.digitaloceanspaces.com/dmbk-images/gh/s-wada-color-combinations.jpg "SANZO WADA - DICTIONARY OF COLOR COMBINATIONS")
 
 Book Published By [Seigensha Art Publishing](http://seigensha.com/)
+
 Buy Here: [http://seigensha.com/en/2016/11/01/978-4-86152-247-5/](http://seigensha.com/en/2016/11/01/978-4-86152-247-5/)
