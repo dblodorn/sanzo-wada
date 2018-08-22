@@ -57,7 +57,7 @@ const Swatch = styled.li`
   `}
   ${ media.small`
     width: 100%;
-    height: 100vw;
+    height: 50vw;
   `}
   p {
     position: absolute;

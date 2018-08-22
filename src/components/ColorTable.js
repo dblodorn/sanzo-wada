@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
-import { colors } from './../styles/theme.json'
-import { smallType } from './../styles'
+import { colors, breakpoints } from './../styles/theme.json'
+import { smallType, media } from './../styles'
 import SwatchWrapper from './SwatchWrapper'
 
 const returnStyle = (color) => {
@@ -21,9 +21,13 @@ const TableLayout = (props) => {
               <td>{color.name}</td>
               <td className={'captialize'}>{color.hex}</td>
               <td>{color.cmyk}</td>
-              <td>{color.rgb}</td>
-              <td>COMBOS: {color.combinations}</td>
-              <td>USAGE: {color.use_count}</td>
+              {(props.breakPoint >= breakpoints.desktop) &&
+                <Fragment>
+                  <td>{color.rgb}</td>
+                  <td>COMBOS: {color.combinations}</td>
+                  <td>USAGE: {color.use_count}</td>
+                </Fragment>
+              }
             </tr>
           )}
         </tbody>
@@ -35,7 +39,7 @@ const TableLayout = (props) => {
 export default (props) => 
   <Fragment>
     {props.colorList.map((colors, i) =>
-      <TableLayout colorList={colors.swatches} indexNo={i} key={`ct_${i}`}/>
+      <TableLayout colorList={colors.swatches}  breakPoint={props.breakPoint} indexNo={i} key={`ct_${i}`}/>
     )}
   </Fragment>
 
@@ -45,6 +49,7 @@ const ColorIndex = styled.table`
   text-align: left;
   color: ${colors.grey};
   ${smallType};
+  line-height: 1.125;
   th {
     border-right: 1px solid ${colors.grey};
     padding: 1rem;

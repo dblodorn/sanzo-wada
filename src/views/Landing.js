@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable } from './../components'
 import { flexRow, buttonInit, smallType } from './../styles'
-import { spacing, colors } from './../styles/theme.json'
+import { colors } from './../styles/theme.json'
 
 class Landing extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class Landing extends Component {
       <Fragment>
         <StyleMenu>
           <StyleButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>Swatch View</StyleButton>
-          <StyleButton onClick={e => this._setTable(e)} className={(this.state.table) && 'active'}>Table View</StyleButton>
+          <StyleButton onClick={e => this._setTable(e)} className={(this.state.table) && 'active'} breakPoint={this.props.resize_state.window_width}>Table View</StyleButton>
         </StyleMenu>
         {(this.state.table) 
           ? <ColorTable colorList={this.props.color_data.color_list}/>
