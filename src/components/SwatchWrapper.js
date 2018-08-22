@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { colors, spacing } from './../styles/theme.json'
-import { flexRowCenteredAll, Section, H2, media } from './../styles'
+import { colors, spacing, shared } from './../styles/theme.json'
+import { flexRowCenteredVert, Section, H2, media } from './../styles'
 
 export default (props) =>
   <Section>
@@ -13,15 +13,15 @@ export default (props) =>
 
 // STYLES
 const SectionHeader = styled.div`
-  ${flexRowCenteredAll};
+  ${flexRowCenteredVert};
   padding-left: ${spacing.single_pad};
   background-color: ${colors.white};
   position: -webkit-sticky;
   position: sticky;
-  top: 4rem;
-  height: 4rem;
+  top: ${shared.nav_height};
+  height: ${shared.nav_height};
   z-index: 100;
   border-bottom: 1px solid ${colors.med_grey};
   color: ${colors.med_grey};
-  text-align: center;
+  text-align: left;
 `

@@ -1,5 +1,6 @@
 import styled, { css, keyframes } from 'styled-components'
-import { spacing, fonts, global, breakpoints } from './theme.json'
+import chroma from 'chroma-js'
+import { spacing, fonts, shared, breakpoints, colors } from './theme.json'
 
 // Media Queries
 const media = {
@@ -98,7 +99,7 @@ const flexRowSpaceBetween = css`
 // LAYOUT UTILS
 const maxWidth = css`
   width: 100%;
-  max-width: ${global.max_width};
+  max-width: ${shared.max_width};
   padding-left: ${spacing.double_pad};
   padding-right: ${spacing.double_pad};
 `
@@ -138,14 +139,16 @@ const sansFont = css`
 const bigType = css`
   font-size: ${fonts.sizes.lg};
   font-family: ${fonts.sans};
-  line-height: 1.25;
+  line-height: 1.1;
   font-weight: bold;
+  word-spacing: .5vmin;
+  letter-spacing: .125vmin;
 `
 
 const mediumType = css`
   font-size: ${fonts.sizes.med};
   font-family: ${fonts.sans};
-  line-height: 1.35;
+  line-height: 1.45;
 `
 
 const smallType = css`
@@ -154,13 +157,31 @@ const smallType = css`
   line-height: .8;
 `
 
+const microType = css`
+  font-size: ${fonts.sizes.micro};
+  font-family: ${fonts.sans};
+  line-height: .8;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+`
+
 const H1 = styled.h2`
   ${bigType};
-  max-width: 100rem;
+  max-width: 94rem;
+  padding-bottom: ${spacing.single_pad};
 `
 
 const H2 = styled.h2`
   ${smallType};
+`
+
+const P = styled.p`
+  ${mediumType};
+  padding-bottom: ${spacing.single_pad};
+  max-width: ${shared.max_width};
+  &:last-child {
+    padding-bottom: 0;
+  }
 `
 
 const buttonInit = css`
@@ -171,6 +192,27 @@ const buttonInit = css`
   appearance: none;
   cursor: pointer;
   display: block;
+`
+
+const StyledButton = styled.button`
+  ${buttonInit};
+  ${microType};
+  ${flexRowCenteredVert};
+  color: ${colors.med_grey};
+  text-transform: uppercase;
+  height: 3rem;
+  padding: 0 2rem;
+  background-color: ${chroma(colors.grey).darken(.2)};
+  color: ${colors.white};
+  border-radius: 1.5rem;
+  will-change: background-color;
+  transition: background-color 250ms ease;
+  span {
+    padding-top: 2px;
+  }
+  &:hover {
+    background-color: ${chroma(colors.grey).darken(1.5)};
+  }
 `
 
 export {
@@ -193,6 +235,8 @@ export {
   buttonInit,
   H2,
   H1,
+  P,
   smallType,
+  StyledButton,
   animationFadeIn
 }

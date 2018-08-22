@@ -23,23 +23,26 @@
     "white": "#ffffff",
     "black": "#1b3644",
     "grey": "#dbdbdb",
-    "med_grey": "#939393"
+    "med_grey": "#939393",
+    "blue": "#0024cc"
   },
   "fonts": {
     "sans": "'fff-regular', system-ui, sans-serif",
     "italic": "'fff-italic', system-ui, sans-serif",
     "sizes": {
+      "micro": ".9rem",
       "lg": "10vmin",
       "med": "2rem",
       "sm": "1.25rem"
     }
   },
-  "global": {
+  "shared": {
     "logo_size": "25vmin",
+    "nav_height": "5rem",
     "border_weight": "2px",
     "logo_size_desk": "8rem",
     "article_width": "70rem",
-    "max_width": "92rem",
+    "max_width": "74rem",
     "super_wide": "124rem",
     "column_width": "40rem",
     "menu_width": "6.5rem"

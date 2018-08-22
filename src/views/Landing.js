@@ -1,8 +1,8 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable } from './../components'
-import { flexRow, buttonInit, smallType } from './../styles'
-import { colors } from './../styles/theme.json'
+import { flexRow, StyledButton } from './../styles'
+import { colors, spacing, shared } from './../styles/theme.json'
 
 class Landing extends Component {
   constructor(props) {
@@ -25,11 +25,17 @@ class Landing extends Component {
     return (
       <Fragment>
         <StyleMenu>
-          <StyleButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>Swatch View</StyleButton>
-          <StyleButton onClick={e => this._setTable(e)} className={(this.state.table) && 'active'} breakPoint={this.props.resize_state.window_width}>Table View</StyleButton>
+          <ButtonWrapper>
+            <StyledButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>
+              <span>Swatch View</span>
+            </StyledButton>
+            <StyledButton onClick={e => this._setTable(e)} className={(this.state.table) && 'active'}>
+              <span>Table View</span>
+            </StyledButton>
+          </ButtonWrapper>
         </StyleMenu>
         {(this.state.table) 
-          ? <ColorTable colorList={this.props.color_data.color_list}/>
+          ? <ColorTable colorList={this.props.color_data.color_list} breakPoint={this.props.resize_state.window_width}/>
           : <ColorSwatches colorList={this.props.color_data.color_list}/>
         }
       </Fragment>
@@ -51,21 +57,16 @@ const StyleMenu = styled.menu`
   background-color: ${colors.white};
 `
 
-const StyleButton = styled.button`
-  ${buttonInit};
-  ${smallType};
-  color: ${colors.med_grey};
-  text-transform: uppercase;
+const ButtonWrapper = styled.div`
   display: flex;
-  width: 50%;
-  height: 4rem;
+  height: ${shared.nav_height};
   align-items: center;
   justify-content: center;
-  &:first-child {
-    border-right: 1px solid ${colors.med_grey};
-  }
-  &.active,
-  &:hover {
-    text-decoration: underline;
+  margin-left: auto;
+  padding: 0 ${spacing.single_pad};
+  button{
+    &:first-child {
+      margin-right: ${spacing.single_pad};
+    }
   }
 `
