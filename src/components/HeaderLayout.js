@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { spacing, colors } from './../styles/theme.json'
-import { H1 } from './../styles'
+import { H1, media } from './../styles'
 
 export default () =>
   <Header>
@@ -15,4 +15,8 @@ const Header = styled.header`
   padding-bottom: 17vh;
   padding-left: ${spacing.double_pad}; 
   border-bottom: 1px solid ${colors.med_grey};
+  ${ media.small`
+  padding-top: ${spacing.double_pad};
+  padding-bottom: ${spacing.double_pad};
+  `}
 `
