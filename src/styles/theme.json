@@ -30,7 +30,7 @@
     "sans": "'fff-regular', system-ui, sans-serif",
     "italic": "'fff-italic', system-ui, sans-serif",
     "sizes": {
-      "micro": ".9rem",
+      "micro": "1rem",
       "lg": "10vmin",
       "med": "2rem",
       "sm": "1.25rem"

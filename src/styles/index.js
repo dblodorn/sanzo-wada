@@ -144,8 +144,11 @@ const bigType = css`
   word-spacing: .5vmin;
   letter-spacing: .125vmin;
   padding-right: ${spacing.double_pad};
+  display: block;
+  position: relative;
   ${ media.small`
-    font-size: 4rem;
+    font-size: 3.5rem;
+    margin: 3.5rem 0;
   `}
 `
 
@@ -228,9 +231,11 @@ const buttonStyle = css`
   }
   ${media.small`
     background-color: ${chroma(colors.grey).darken(1.125)}; 
-    width: 12rem;
+    width: auto;
+    min-width: 10rem;
+    padding: 0 1.5rem;
     span {
-      padding-top: 1px;
+      padding-top: 2px;
     }
     &.active {
       background-color: ${chroma(colors.grey).darken(1.5)};

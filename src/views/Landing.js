@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable } from './../components'
 import { flexRow, StyledButton, media, ButtonHref } from './../styles'
-import { colors, spacing, shared } from './../styles/theme.json'
+import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
 
 class Landing extends Component {
   constructor(props) {
@@ -27,13 +27,13 @@ class Landing extends Component {
         <StyleMenu>
           <ButtonWrapper>
             <StyledButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>
-              <span>Swatch View</span>
+              <span>{(this.props.resize_state.window_width >= breakpoints.desktop) ? `Swatch View` : `Swatches`}</span>
             </StyledButton>
             <StyledButton onClick={e => this._setTable(e)} className={(this.state.table) && 'active'}>
-              <span>Table View</span>
+              <span>{(this.props.resize_state.window_width >= breakpoints.desktop) ? `List View` : `List`}</span>
             </StyledButton>
             <ButtonHref href="/assets/colors.json">
-              <span>JSON API</span>
+              <span>JSON {(this.props.resize_state.window_width >= breakpoints.desktop) && `API`}</span>
             </ButtonHref>
           </ButtonWrapper>
         </StyleMenu>
