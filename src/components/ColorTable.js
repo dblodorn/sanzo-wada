@@ -10,38 +10,26 @@ const returnStyle = (color) => {
   }
 }
 
-const TableLayout = (props) => {
-  return (
-    <SwatchWrapper indexNo={props.indexNo}>
-      <ColorIndex>
-        <tbody>
-          {props.colorList.map((color, i) =>
-            <tr key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)}>
-              <td>{color.index}</td>
-              <td>{color.name}</td>
-              <td className={'captialize'}>{color.hex}</td>
-              <td>{color.cmyk}</td>
-              {(props.breakPoint >= breakpoints.desktop) &&
-                <Fragment>
-                  <td>{color.rgb}</td>
-                  <td>COMBOS: {color.combinations}</td>
-                  <td>USAGE: {color.use_count}</td>
-                </Fragment>
-              }
-            </tr>
-          )}
-        </tbody>
-      </ColorIndex>
-    </SwatchWrapper>
-  )
-}
-
-export default (props) => 
-  <Fragment>
-    {props.colorList.map((colors, i) =>
-      <TableLayout colorList={colors.swatches}  breakPoint={props.breakPoint} indexNo={i} key={`ct_${i}`}/>
-    )}
-  </Fragment>
+export default (props) =>
+  <ColorIndex>
+    <tbody>
+      {props.colorList.map((color, i) =>
+        <tr key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)}>
+          <td>{color.index}</td>
+          <td>{color.name}</td>
+          <td className={'captialize'}>{color.hex}</td>
+          <td>{color.cmyk}</td>
+          {(props.breakPoint >= breakpoints.desktop) &&
+            <Fragment>
+              <td>{color.rgb}</td>
+              <td>COMBOS: {color.combinations}</td>
+              <td>USAGE: {color.use_count}</td>
+            </Fragment>
+          }
+        </tr>
+      )}
+    </tbody>
+  </ColorIndex>
 
 // STYLES
 const ColorIndex = styled.table`

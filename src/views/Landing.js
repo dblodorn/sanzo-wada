@@ -38,7 +38,7 @@ class Landing extends Component {
           </ButtonWrapper>
         </StyleMenu>
         {(this.state.table) 
-          ? <ColorTable colorList={this.props.color_data.color_list} breakPoint={this.props.resize_state.window_width}/>
+          ? <ColorTable colorList={this.props.color_data.color_list_flat} breakPoint={this.props.resize_state.window_width}/>
           : <ColorSwatches colorList={this.props.color_data.color_list}/>
         }
       </Fragment>
