@@ -203,7 +203,7 @@ const buttonInit = css`
   display: block;
 `
 
-const StyledButton = styled.button`
+const buttonStyle = css`
   ${buttonInit};
   ${microType};
   ${flexRowCenteredAll};
@@ -215,7 +215,8 @@ const StyledButton = styled.button`
   border-radius: 1.5rem;
   will-change: background-color;
   transition: background-color 250ms ease;
-  width: 11rem;
+  width: 10.5rem;
+  text-decoration: none;
   span {
     padding-top: 2px;
   }
@@ -235,6 +236,14 @@ const StyledButton = styled.button`
       background-color: ${chroma(colors.grey).darken(1.5)};
     }
   `}
+`
+
+const StyledButton = styled.button`
+  ${buttonStyle};
+`
+
+const ButtonHref = styled.a`
+  ${buttonStyle}; 
 `
 
 export {
@@ -260,5 +269,6 @@ export {
   P,
   smallType,
   StyledButton,
+  ButtonHref,
   animationFadeIn
 }

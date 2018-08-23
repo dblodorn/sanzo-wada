@@ -31,9 +31,10 @@ export default (swatches) => {
       "slug": returnSlug(e.name),
       "cmyk_array": e.cmyk,
       "cmyk": `C:${e.cmyk[0]} / M:${e.cmyk[1]} / Y:${e.cmyk[2]} / K:${e.cmyk[3]}`,
+      "rgb_array": rgb,
       "rgb": `R:${rgb[0]} / G:${rgb[1]} / B:${rgb[2]}`,
       "hex": `${hex}`,
-      "combinations": `${e.combinations}`,
+      "combinations": e.combinations,
       "use_count": e.combinations.length
     }
     colorList.push(colorObject)

@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable } from './../components'
-import { flexRow, StyledButton, media } from './../styles'
+import { flexRow, StyledButton, media, ButtonHref } from './../styles'
 import { colors, spacing, shared } from './../styles/theme.json'
 
 class Landing extends Component {
@@ -32,6 +32,9 @@ class Landing extends Component {
             <StyledButton onClick={e => this._setTable(e)} className={(this.state.table) && 'active'}>
               <span>Table View</span>
             </StyledButton>
+            <ButtonHref href="/assets/colors.json">
+              <span>JSON API</span>
+            </ButtonHref>
           </ButtonWrapper>
         </StyleMenu>
         {(this.state.table) 
@@ -64,10 +67,8 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   margin-left: auto;
   padding: 0 ${spacing.single_pad};
-  button{
-    &:first-child {
-      margin-right: ${spacing.single_pad};
-    }
+  button {
+    margin-right: ${spacing.single_pad};
   }
   ${media.small`
     margin: auto;
