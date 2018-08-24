@@ -78,4 +78,9 @@ const Swatch = styled.li`
     left: ${spacing.single_pad};
     bottom: ${spacing.single_pad};
   }
+  transition: opacity 300ms ease;
+  will-change: opacity;
+  &:hover {
+    opacity: 0.7;
+  }
 `

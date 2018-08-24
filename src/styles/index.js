@@ -260,6 +260,10 @@ const StyledButton = styled.button`
   ${buttonStyle};
 `
 
+const ButtonLink = styled(Link)`
+  ${buttonStyle};
+`
+
 const ButtonHref = styled.a`
   ${buttonStyle}; 
 `
@@ -289,5 +293,6 @@ export {
   StyledButton,
   ButtonHref,
   SwatchLink,
+  ButtonLink,
   animationFadeIn
 }

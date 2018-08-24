@@ -18,7 +18,12 @@ module.exports = {
     extensions: ['*', '.js']
   },
   output: {
-    filename: '[name].[hash].js'
+    filename: '[name].[hash].js',
+    publicPath: '/'
+  },
+  devServer: {
+    publicPath: '/',
+    historyApiFallback: true,
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
