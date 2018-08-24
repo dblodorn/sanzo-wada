@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import SwatchWrapper from './SwatchWrapper'
 import { colors, spacing } from './../styles/theme.json'
-import { smallType, flexRowWrap, flexRow, media } from './../styles'
+import { smallType, flexRowWrap, flexRow, media, SwatchLink } from './../styles'
 
 const returnStyle = (color) => {
   return {
@@ -16,9 +16,11 @@ const Swatches = (props) => {
       <SwatchBook>
         {props.colorList.map((color, i) =>
           <Swatch key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)}>
-            <p className={'index'}>{color.index}</p>
-            <p className={'name'}>{color.name}</p>
-            <p className={'hex'}>{color.hex}</p>
+            <SwatchLink to={`/swatches/${color.slug}`}>
+              <p className={'index'}>{color.index}</p>
+              <p className={'name'}>{color.name}</p>
+              <p className={'hex'}>{color.hex}</p>
+            </SwatchLink>
           </Swatch>
         )}
       </SwatchBook>

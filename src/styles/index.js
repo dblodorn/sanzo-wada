@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled, { css, keyframes } from 'styled-components'
 import chroma from 'chroma-js'
 import { spacing, fonts, shared, breakpoints, colors } from './theme.json'
@@ -206,6 +207,18 @@ const buttonInit = css`
   display: block;
 `
 
+const SwatchLink = styled(Link)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: block;
+  text-decoration: none;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  color: ${colors.grey};
+`
+
 const buttonStyle = css`
   ${buttonInit};
   ${microType};
@@ -275,5 +288,6 @@ export {
   smallType,
   StyledButton,
   ButtonHref,
+  SwatchLink,
   animationFadeIn
 }

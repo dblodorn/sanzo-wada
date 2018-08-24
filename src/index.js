@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createBrowserHistory } from 'history'
+import { routerMiddleware, connectRouter } from 'connected-react-router'
 import { createStore, compose, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
@@ -16,11 +18,15 @@ mixin(_, {
   throttle: throttle
 })
 
+// ROUTER & REDUX
+const history = createBrowserHistory()
+
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(
-  rootReducer,
+  connectRouter(history)(rootReducer),
   composeEnhancer(
     applyMiddleware(
+      routerMiddleware(history),
       thunk
     ),
   ),
@@ -48,9 +54,9 @@ window.addEventListener('resize', _.throttle(resizeHandler, 50))
 
 ReactDOM.render(
   <Provider store={store}>
-    <App/>
+    <App history={history} />
   </Provider>,
   document.getElementById('root')
-);
+)
 
 module.hot.accept();

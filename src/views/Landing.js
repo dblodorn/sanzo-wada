@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
-import { withStore, ColorSwatches, ColorTable } from './../components'
+import { withStore, ColorSwatches, ColorTable, HeaderLayout } from './../components'
 import { flexRow, StyledButton, media, ButtonHref } from './../styles'
 import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
 
@@ -24,6 +24,7 @@ class Landing extends Component {
   render() {
     return (
       <Fragment>
+        <HeaderLayout/>
         <StyleMenu>
           <ButtonWrapper>
             <StyledButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>

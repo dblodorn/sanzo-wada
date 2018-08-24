@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "chroma-js": "^1.3.7",
+    "connected-react-router": "^4.4.1",
+    "history": "^4.7.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-helmet": "^5.2.0",

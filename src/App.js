@@ -1,8 +1,13 @@
 import React from 'react'
-import Document from './Document'
-import { Landing } from './views'
+import { ConnectedRouter } from 'connected-react-router'
+import Routes from './Routes'
 
-export default () =>
-  <Document>
-    <Landing/>
-  </Document>
+const App = ({ history }) => {
+  return (
+    <ConnectedRouter history={history}>
+      <Routes/>
+    </ConnectedRouter>
+  )
+}
+
+export default App

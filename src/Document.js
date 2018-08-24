@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import styled, { injectGlobal } from 'styled-components'
-import { HeaderLayout } from './components'
 import { media, flexColumn } from './styles'
 import { colors, fonts } from './styles/theme.json'
 
@@ -13,12 +12,9 @@ class Document extends Component {
   }
   render() {
     return (
-      <Fragment>
-        <HeaderLayout/>
-        <Main>
-          {this.props.children}
-        </Main>
-      </Fragment>
+      <Main>
+        {this.props.children}
+      </Main>
     )
   }
 }
