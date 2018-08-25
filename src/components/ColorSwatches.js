@@ -16,7 +16,7 @@ const Swatches = (props) => {
       <SwatchBook>
         {props.colorList.map((color, i) =>
           <Swatch key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)}>
-            <SwatchLink to={`/swatches/${color.slug}`}>
+            <SwatchLink to={`/swatch/${color.slug}`}>
               <p className={'index'}>{color.index}</p>
               <p className={'name'}>{color.name}</p>
               <p className={'hex'}>{color.hex}</p>

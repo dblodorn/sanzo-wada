@@ -6,6 +6,7 @@ import SwatchHeader from './SwatchHeader'
 // HOC
 import withStore from './HOC/withStore'
 import swatchData from './HOC/swatchData'
+import comboData from './HOC/comboData'
 
 export {
   ColorTable,
@@ -13,5 +14,6 @@ export {
   ColorSwatches,
   HeaderLayout,
   swatchData,
-  SwatchHeader
+  SwatchHeader,
+  comboData
 }

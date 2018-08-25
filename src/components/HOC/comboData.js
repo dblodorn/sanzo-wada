@@ -1,28 +1,40 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import find from 'lodash/find'
+import includes from 'lodash/includes'
 import mixin from 'lodash/mixin'
 import _ from 'lodash/wrapperLodash'
 
 mixin(_, {
-  find: find
+  find: find,
+  includes: includes
 })
 
 const returnSlug = (route) => {
   const splitRoute = route.split('/')
-  const splitLength = splitRoute.length - 1
-  return splitRoute[splitLength]
+  return splitRoute[2]
 }
 
-const filterSwatchData = (data, pageSlug) => {
-  const swatch = _.find(data, {
-    slug: pageSlug
+const filterSwatchData = (swatches, pageSlug) => {
+  let colorList = []
+  const slugInt = parseInt(pageSlug, 10)
+  swatches.forEach((e) => {
+    if (_.includes(e.combinations, slugInt)) {
+      const combination = {
+        'hex': e.hex,
+        'name': e.name,
+        'slug': e.slug
+      }
+      colorList.push(combination)
+    }
   })
-  return swatch
+  return {
+    'colors': colorList
+  }
 }
 
 export default (InnerComponent) => {
-  class SwatchWrapper extends Component {
+  class ComboWrapper extends Component {
     constructor(props){
       super(props)
       this.state = {
@@ -32,7 +44,8 @@ export default (InnerComponent) => {
     componentWillMount(){
       this.setState({
         swatch: filterSwatchData(
-          this.props.swatches, this.props.slug
+          this.props.swatches, 
+          this.props.slug
         )
       })
     }
@@ -40,6 +53,7 @@ export default (InnerComponent) => {
       return (
         <InnerComponent
           {...this.state.swatch}
+          {...this.props}
         />
       )
     }
@@ -49,5 +63,5 @@ export default (InnerComponent) => {
       swatches: state.color_data.color_list_flat,
       slug: returnSlug(state.router.location.pathname)
     })
-  )(SwatchWrapper)
+  )(ComboWrapper)
 }

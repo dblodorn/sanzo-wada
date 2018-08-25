@@ -219,6 +219,11 @@ const SwatchLink = styled(Link)`
   color: ${colors.grey};
 `
 
+const ComboLink = styled(Link)`
+  ${mediumType};  
+  color: ${colors.grey};
+`
+
 const buttonStyle = css`
   ${buttonInit};
   ${microType};
@@ -294,5 +299,6 @@ export {
   ButtonHref,
   SwatchLink,
   ButtonLink,
+  ComboLink,
   animationFadeIn
 }
