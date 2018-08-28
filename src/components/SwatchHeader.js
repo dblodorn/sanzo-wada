@@ -1,10 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { spacing, colors, shared } from './../styles/theme.json'
-import { flexRowCenteredVert, ButtonLink } from './../styles'
+import { flexRowCenteredVert, ButtonLink, flexRow } from './../styles'
 
-export default () =>
+export default (props) =>
   <Header>
+    <LeftInfo>
+      {props.children}
+    </LeftInfo>
     <ButtonLink to={'/'}>
       <span>Index</span>
     </ButtonLink>
@@ -25,4 +28,10 @@ const Header = styled.header`
   color: ${colors.med_grey};
   text-align: left;
   justify-content: flex-end;
+`
+
+const LeftInfo = styled.div`
+  ${flexRow};
+  margin-right: auto;
+  padding-top: 4px;
 `

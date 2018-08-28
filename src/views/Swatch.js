@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { swatchData, SwatchHeader } from './../components'
-import { flexColumn, media, H1, ComboLink } from './../styles'
+import { flexColumn, media, H1, ComboLink, mediumType } from './../styles'
 import { colors, spacing, shared } from './../styles/theme.json'
 
 class Swatch extends Component {
@@ -11,8 +11,9 @@ class Swatch extends Component {
   render() {
     return (
       <SwatchSection style={{backgroundColor: this.props.hex}}>
-        <SwatchHeader/>
-        <SwatchTitle>{this.props.name}<br/>{this.props.cmyk}<br/>{this.props.rgb}</SwatchTitle>
+        <SwatchHeader>
+          <SwatchTitle>{this.props.name}  |  {this.props.hex}</SwatchTitle>
+        </SwatchHeader>
         <ComboList>
           {this.props.combinations.map((combo, i) => 
             <ComboLink to={`/combination/${combo}`} key={`${this.props.slug}-${combo}`}>{combo}</ComboLink>
@@ -40,6 +41,6 @@ const ComboList = styled.menu`
   ${flexColumn};
 `
 
-const SwatchTitle = styled(H1)`
-  color: ${colors.grey};
+const SwatchTitle = styled.h1`
+  ${mediumType};
 `

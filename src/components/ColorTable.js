@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import { colors, breakpoints } from './../styles/theme.json'
-import { smallType, media } from './../styles'
+import { smallType, media, SmallLink } from './../styles'
 import SwatchWrapper from './SwatchWrapper'
 
 const returnStyle = (color) => {
@@ -16,14 +16,18 @@ export default (props) =>
       {props.colorList.map((color, i) =>
         <tr key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)}>
           <td>{color.index}</td>
-          <td>{color.name}</td>
+          <td><SmallLink to={`/swatch/${color.slug}`}>{color.name}</SmallLink></td>
           <td className={'captialize'}>{color.hex}</td>
-          <td>{color.cmyk}</td>
           {(props.breakPoint >= breakpoints.desktop) &&
             <Fragment>
+              <td>
+                {color.combinations.map((combo, i) => 
+                  <SmallLink to={`/combination/${combo}`} key={`${combo}-${i}`}>{combo}</SmallLink>
+                )}
+              </td>
+              <td>{color.cmyk}</td>
               <td>{color.rgb}</td>
-              <td>COMBOS: {color.combinations}</td>
-              <td>USAGE: {color.use_count}</td>
+              <td>{color.use_count}</td>
             </Fragment>
           }
         </tr>
@@ -56,5 +60,8 @@ const ColorIndex = styled.table`
   }
   td {
     padding: 5rem 1rem;
+    a {
+      margin-right: .5rem;
+    }
   }
 `

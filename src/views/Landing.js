@@ -24,7 +24,6 @@ class Landing extends Component {
   render() {
     return (
       <Fragment>
-        <HeaderLayout/>
         <StyleMenu>
           <ButtonWrapper>
             <StyledButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>

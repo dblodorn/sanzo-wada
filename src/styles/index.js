@@ -156,6 +156,7 @@ const bigType = css`
 const mediumType = css`
   font-size: ${fonts.sizes.med};
   font-family: ${fonts.sans};
+  font-weight: 700;
   line-height: 1.45;
 `
 
@@ -185,6 +186,10 @@ const H2 = styled.h2`
     width: 100%;
     text-align: center;
   `}
+`
+
+const H2Big = styled.h2`
+  ${mediumType};
 `
 
 const P = styled.p`
@@ -220,8 +225,10 @@ const SwatchLink = styled(Link)`
 `
 
 const ComboLink = styled(Link)`
-  ${mediumType};  
+  ${bigType};  
   color: ${colors.grey};
+  margin-bottom: 3rem;
+  display: inline-flex;
 `
 
 const buttonStyle = css`
@@ -269,6 +276,12 @@ const ButtonLink = styled(Link)`
   ${buttonStyle};
 `
 
+const SmallLink = styled(Link)`
+  ${smallType};
+  text-decoration: underline;
+  color: ${colors.grey};
+`
+
 const ButtonHref = styled.a`
   ${buttonStyle}; 
 `
@@ -293,6 +306,7 @@ export {
   buttonInit,
   H2,
   H1,
+  H2Big,
   P,
   smallType,
   StyledButton,
@@ -300,5 +314,6 @@ export {
   SwatchLink,
   ButtonLink,
   ComboLink,
-  animationFadeIn
+  animationFadeIn,
+  SmallLink
 }
