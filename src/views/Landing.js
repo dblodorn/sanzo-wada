@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
-import { withStore, ColorSwatches, ColorTable, HeaderLayout } from './../components'
-import { flexRow, StyledButton, media, ButtonHref, H1 } from './../styles'
+import { withStore, ColorSwatches, ColorTable } from './../components'
+import { flexRow, StyledButton, media, ButtonHref, H1, ButtonLink } from './../styles'
 import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
 
 class Landing extends Component {
@@ -38,6 +38,9 @@ class Landing extends Component {
             <ButtonHref href="/assets/colors.json">
               <span>JSON {(this.props.resize_state.window_width >= breakpoints.desktop) && `API`}</span>
             </ButtonHref>
+            <ButtonLink to={'/about'}>
+              <span>ABOUT</span>
+            </ButtonLink>
           </ButtonWrapper>
         </StyleMenu>
         {(this.state.table) 
@@ -69,8 +72,9 @@ const ButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  padding: 0 ${spacing.single_pad};
-  button {
+  padding-left: ${spacing.single_pad};
+  button,
+  a {
     margin-right: ${spacing.single_pad};
   }
   ${media.small`

@@ -145,12 +145,21 @@ const bigType = css`
   word-spacing: .5vmin;
   letter-spacing: .125vmin;
   padding-right: ${spacing.double_pad};
+  margin-bottom: 3vmin;
   display: block;
   position: relative;
   ${ media.small`
     font-size: 3.5rem;
     margin: 3.5rem 0;
   `}
+`
+
+const lgBodyCopy = css`
+  font-size: ${fonts.sizes.med_lg};
+  font-family: ${fonts.sans};
+  font-weight: 500;
+  line-height: 1.35;
+  padding-right: ${spacing.single_pad};
 `
 
 const mediumType = css`
@@ -179,6 +188,11 @@ const H1 = styled.h1`
   color: ${colors.med_grey};
 `
 
+const H1Big = styled.h1`
+  ${bigType};
+  color: ${colors.black};
+`
+
 const H2 = styled.h2`
   ${smallType};
   ${media.small`
@@ -196,6 +210,15 @@ const P = styled.p`
   padding-bottom: ${spacing.single_pad};
   max-width: ${shared.max_width};
   padding-right: ${spacing.double_pad};
+  &:last-child {
+    padding-bottom: 0;
+  }
+`
+
+const PBig = styled.p`
+  ${lgBodyCopy};
+  color: ${colors.black};
+  padding-bottom: ${spacing.double_pad};
   &:last-child {
     padding-bottom: 0;
   }
@@ -305,9 +328,12 @@ export {
   buttonInit,
   H2,
   H1,
+  H1Big,
   H2Big,
   P,
+  PBig,
   smallType,
+  lgBodyCopy,
   StyledButton,
   ButtonHref,
   SwatchLink,

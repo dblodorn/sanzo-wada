@@ -33,6 +33,7 @@
       "micro": "1rem",
       "lg": "10vmin",
       "med": "2rem",
+      "med_lg": "6vmin",
       "sm": "1.25rem"
     }
   },

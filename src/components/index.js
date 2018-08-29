@@ -1,5 +1,5 @@
 // COMPONENTS
-import HeaderLayout from './HeaderLayout'
+import AboutCopy from './AboutCopy'
 import ColorTable from './ColorTable'
 import ColorSwatches from './ColorSwatches'
 import SwatchHeader from './SwatchHeader'
@@ -12,7 +12,7 @@ export {
   ColorTable,
   withStore,
   ColorSwatches,
-  HeaderLayout,
+  AboutCopy,
   swatchData,
   SwatchHeader,
   comboData

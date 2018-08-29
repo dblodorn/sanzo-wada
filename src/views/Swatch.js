@@ -4,24 +4,19 @@ import { swatchData, SwatchHeader } from './../components'
 import { flexColumn, media, H1, ComboLink, mediumType } from './../styles'
 import { colors, spacing, shared } from './../styles/theme.json'
 
-class Swatch extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <SwatchSection style={{backgroundColor: this.props.hex}}>
-        <SwatchHeader>
-          <SwatchTitle>{this.props.name}  |  {this.props.hex}</SwatchTitle>
-        </SwatchHeader>
-        <ComboList>
-          {this.props.combinations.map((combo, i) => 
-            <ComboLink to={`/combination/${combo}`} key={`${this.props.slug}-${combo}`}>{combo}</ComboLink>
-          )}
-        </ComboList>
-      </SwatchSection>
-    )
-  }
+const Swatch = (props) => {
+  return (
+    <SwatchSection style={{backgroundColor: props.hex}}>
+      <SwatchHeader>
+        <SwatchTitle>{props.name}  |  <span style={{color: props.hex}}>{props.hex}</span></SwatchTitle>
+      </SwatchHeader>
+      <ComboList>
+        {props.combinations.map((combo, i) => 
+          <ComboLink to={`/combination/${combo}`} key={`${props.slug}-${combo}`}>{combo}</ComboLink>
+        )}
+      </ComboList>
+    </SwatchSection>
+  )
 }
 
 export default swatchData(Swatch)

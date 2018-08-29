@@ -13,7 +13,7 @@ class Swatch extends Component {
     return (
       <ComboSection>
         <SwatchHeader>
-          <ComboTitle>Combination: {this.props.slug}</ComboTitle>
+          <ComboTitle>Combination: {this.props.slug}  |  </ComboTitle>
           <ComboHex>
             {this.props.colors.map((color, i) => 
               <ComboHexItem key={`${this.props.slug}-title-${i}`} style={{color: color.hex}}>
@@ -59,16 +59,6 @@ const ComboWrapper = styled.div`
   z-index: 0;
 `
 
-const InfoWrapper = styled.div`
-  ${flexRow};
-  width: 100%;
-  position: fixed;
-  top: ${shared.nav_height};
-  left: 0;
-  z-index: 10;
-  padding: ${spacing.single_pad};
-`
-
 const ColorBar = styled.div`
   position: relative;
   width: 100%;
@@ -108,6 +98,6 @@ const ComboHexItem = styled.p`
 `
 
 const ComboHex = styled.div`
-  margin-left: ${spacing.single_pad};
+  margin-left: .5rem;
   ${flexRow};
 `
