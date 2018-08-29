@@ -156,7 +156,7 @@ const bigType = css`
 const mediumType = css`
   font-size: ${fonts.sizes.med};
   font-family: ${fonts.sans};
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.45;
 `
 
@@ -174,10 +174,9 @@ const microType = css`
   word-spacing: 2px;
 `
 
-const H1 = styled.h2`
-  ${bigType};
-  max-width: 94rem;
-  padding-bottom: ${spacing.single_pad};
+const H1 = styled.h1`
+  ${mediumType};
+  color: ${colors.med_grey};
 `
 
 const H2 = styled.h2`

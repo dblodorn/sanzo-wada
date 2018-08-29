@@ -27,7 +27,6 @@ class Swatch extends Component {
             <ColorBar key={`${this.props.slug}-${i}`} style={{backgroundColor: color.hex}}>
               <SwatchLink to={`/swatch/${color.slug}`}>
                 <p className={'name'}>{color.name}</p>
-                <p className={'hex'}>{color.hex}</p>
               </SwatchLink>
             </ColorBar>
           )}
@@ -84,13 +83,13 @@ const ColorBar = styled.div`
     will-change: opacity;
   }
   .name {
-    right: ${spacing.single_pad};
-    bottom: ${spacing.single_pad};
+    left: ${spacing.single_pad};
+    top: calc(${spacing.single_pad} + ${shared.nav_height});
     text-align: right;
   }
   .hex {
-    left: ${spacing.single_pad};
-    bottom: ${spacing.single_pad};
+    right: ${spacing.single_pad};
+    top: calc(${spacing.single_pad} + ${shared.nav_height});
   }
   &:hover {
     p {

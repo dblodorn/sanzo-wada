@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable, HeaderLayout } from './../components'
-import { flexRow, StyledButton, media, ButtonHref } from './../styles'
+import { flexRow, StyledButton, media, ButtonHref, H1 } from './../styles'
 import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
 
 class Landing extends Component {
@@ -25,6 +25,9 @@ class Landing extends Component {
     return (
       <Fragment>
         <StyleMenu>
+          <TitleWrapper>
+            <H1>Sanzo Wada | A Dictionary of Color Combinations.</H1>
+          </TitleWrapper>
           <ButtonWrapper>
             <StyledButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>
               <span>{(this.props.resize_state.window_width >= breakpoints.desktop) ? `Swatch View` : `Swatches`}</span>
@@ -73,4 +76,11 @@ const ButtonWrapper = styled.div`
   ${media.small`
     margin: auto;
   `}
+`
+
+const TitleWrapper = styled.div`
+  display: flex;
+  height: ${shared.nav_height};
+  align-items: center;
+  padding: 0 ${spacing.single_pad};
 `
