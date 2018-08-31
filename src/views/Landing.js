@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
-import { withStore, ColorSwatches, ColorTable } from './../components'
-import { flexRow, StyledButton, media, ButtonHref, H1, ButtonLink } from './../styles'
+import { withStore, ColorSwatches, ColorTable, Title } from './../components'
+import { flexRow, StyledButton, media, ButtonHref, ButtonLink } from './../styles'
 import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
 
 class Landing extends Component {
@@ -12,22 +12,15 @@ class Landing extends Component {
     }
   }
 
-  _setTable() {
-    this.setState({ table: true })
+  _setTable() { this.setState({ table: true })}
 
-  }
-
-  _setSwatch() {
-    this.setState({ table: false })
-  }
+  _setSwatch() {this.setState({ table: false })}
 
   render() {
     return (
       <Fragment>
         <StyleMenu>
-          <TitleWrapper>
-            <H1>Sanzo Wada | A Dictionary of Color Combinations.</H1>
-          </TitleWrapper>
+          <Title/>
           <ButtonWrapper>
             <StyledButton onClick={e => this._setSwatch(e)} className={(!this.state.table) && 'active'}>
               <span>{(this.props.resize_state.window_width >= breakpoints.desktop) ? `Swatch View` : `Swatches`}</span>
@@ -80,11 +73,4 @@ const ButtonWrapper = styled.div`
   ${media.small`
     margin: auto;
   `}
-`
-
-const TitleWrapper = styled.div`
-  display: flex;
-  height: ${shared.nav_height};
-  align-items: center;
-  padding: 0 ${spacing.single_pad};
 `
