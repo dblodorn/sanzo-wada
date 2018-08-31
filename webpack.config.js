@@ -4,6 +4,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+let pathsToClean = [
+  'dist'
+]
+
+let cleanOptions = {
+  exclude:  ['_redirects', '.dat'],
+  verbose:  true,
+  dry:      false
+}
+
 module.exports = {
   module: {
     rules: [
@@ -26,7 +36,7 @@ module.exports = {
     historyApiFallback: true,
   },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(pathsToClean, cleanOptions),
     new HtmlWebpackPlugin({
       template: './index.html'
     }),
