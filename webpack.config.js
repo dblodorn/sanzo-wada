@@ -3,12 +3,13 @@ const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackShellPlugin = require('webpack-shell-plugin');
 
-let pathsToClean = [
+const pathsToClean = [
   'dist'
 ]
 
-let cleanOptions = {
+const cleanOptions = {
   exclude:  ['_redirects', '.dat'],
   verbose:  true,
   dry:      false
@@ -36,13 +37,27 @@ module.exports = {
     historyApiFallback: true,
   },
   plugins: [
-    new CleanWebpackPlugin(pathsToClean, cleanOptions),
+    new CleanWebpackPlugin(
+      pathsToClean,
+      cleanOptions
+    ),
     new HtmlWebpackPlugin({
       template: './index.html'
     }),
     new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin([
       { from: './assets/**/*', to: './' }
-    ])
+    ]),
+    new WebpackShellPlugin({
+      onBuildStart: [
+        'echo "Webpack Start"'
+      ],
+      onBuildEnd: [
+        'echo "Webpack Done"'
+      ],
+      onBuildExit: [
+        'echo "Webpack Exit"'
+      ]
+    })
   ]
 };
