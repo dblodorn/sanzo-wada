@@ -16,7 +16,7 @@ Major thanks to [@gka](https://github.com/gka) for authoring the amazing color m
 
 348 color combinations originated by Sanzo Wada (1883-1967) who, in that time of increasingly avant-grade and diversified use of color, was quick to focus on the importance of color and laid the foundation for contemporary color research. Sanzo Wada was active as an artist, art school instructor, costume designer for the movies and the theater, and kimono and fashion designer who employed his extensive and versatile talents to do innovative work that centered primarily on visual perception and form.
 
-![alt-text](https://dmbk-io.sfo2.digitaloceanspaces.com/dmbk-images/sanzo-wada/swada-colors.jpg "SANZO WADA - DICTIONARY OF COLOR COMBINATIONS")
+![SANZO WADA - DICTIONARY OF COLOR COMBINATIONS](https://dmbk-io.sfo2.digitaloceanspaces.com/dmbk-images/sanzo-wada/swada-colors.jpg)
 
 Book Published By [Seigensha Art Publishing](http://seigensha.com/)
 
