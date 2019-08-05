@@ -148,9 +148,8 @@ const bigType = css`
   margin-bottom: 3vmin;
   display: block;
   position: relative;
-  ${ media.small`
+  ${media.small`
     font-size: 3.5rem;
-    margin: 3.5rem 0;
   `}
 `
 
@@ -249,8 +248,11 @@ const SwatchLink = styled(Link)`
 const ComboLink = styled(Link)`
   ${bigType};  
   color: ${colors.grey};
-  margin-bottom: 3rem;
+  margin-bottom: ${spacing.double_pad};
   display: inline-flex;
+  &:hover {
+    color: ${colors.white};
+  }
 `
 
 const buttonStyle = css`
@@ -282,7 +284,7 @@ const buttonStyle = css`
     min-width: 10rem;
     padding: 0 1.5rem;
     span {
-      padding-top: 2px;
+      padding-top: 1px;
     }
     &.active {
       background-color: ${chroma(colors.grey).darken(1.5)};

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SwatchHeader, Title } from './../components'
-import { Section, PBig, media } from './../styles'
+import { Section, PBig } from './../styles'
 import { spacing } from './../styles/theme.json'
 
 export default () =>
@@ -17,11 +17,7 @@ export default () =>
 // STYLES
 const AboutCopy = styled.article`
   width: 100%;
-  padding-top: 10vh;
-  padding-bottom: 10vh;
-  padding-left: ${spacing.double_pad};
-  ${media.small`
-    padding-top: ${spacing.double_pad};
-    padding-bottom: ${spacing.double_pad};
-  `}
+  padding-top: ${spacing.double_pad};
+  padding-bottom: ${spacing.big_pad};
+  padding-left: ${spacing.single_pad};
 `

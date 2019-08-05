@@ -1,40 +1,33 @@
-import React, { Component } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { comboData, SwatchHeader } from './../components'
-import { flexRow, SwatchLink, media, mediumType } from './../styles'
-import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
+import { flexRow, SwatchLink, mediumType, media } from './../styles'
+import { spacing, shared } from './../styles/theme.json'
 
-class Swatch extends Component {
-  constructor(props) {
-    super(props)
-    console.log(this.props)
-  }
-  render() {
-    return (
-      <ComboSection>
-        <SwatchHeader>
-          <ComboTitle>Combination: {this.props.slug}  |  </ComboTitle>
-          <ComboHex>
-            {this.props.colors.map((color, i) => 
-              <ComboHexItem key={`${this.props.slug}-title-${i}`} style={{color: color.hex}}>
-                {color.hex}
-              </ComboHexItem>
-            )}
-          </ComboHex>
-        </SwatchHeader>
-        <ComboWrapper>
-          {this.props.colors.map((color, i) => 
-            <ColorBar key={`${this.props.slug}-${i}`} style={{backgroundColor: color.hex}}>
-              <SwatchLink to={`/swatch/${color.slug}`}>
-                <p className={'name'}>{color.name}</p>
-              </SwatchLink>
-            </ColorBar>
-          )}
-        </ComboWrapper>
-      </ComboSection>
-    )
-  }
-}
+const Swatch = (props) =>
+  <React.Fragment>
+    <SwatchHeader>
+      <ComboTitle>Combination: {props.slug}</ComboTitle>
+      <ComboHex>
+        {props.colors.map((color, i) =>
+          <ComboHexItem key={`${props.slug}-title-${i}`} style={{ color: color.hex }}>
+            {color.hex}
+          </ComboHexItem>
+        )}
+      </ComboHex>
+    </SwatchHeader>
+    <ComboSection>
+      <ComboWrapper>
+        {props.colors.map((color, i) =>
+          <ColorBar key={`${props.slug}-${i}`} style={{ backgroundColor: color.hex }}>
+            <SwatchLink to={`/swatch/${color.slug}`}>
+              <p className={'name'}>{color.name}</p>
+            </SwatchLink>
+          </ColorBar>
+        )}
+      </ComboWrapper>
+    </ComboSection>
+  </React.Fragment>
 
 export default comboData(Swatch)
 
@@ -90,11 +83,25 @@ const ColorBar = styled.div`
 
 const ComboTitle = styled.h1`
   ${mediumType};
+  &:after {
+    content: '|';
+    padding: 0 ${spacing.single_pad};
+  }
+  ${media.small`
+    padding: 0 ${spacing.single_pad} ${spacing.single_pad};
+    &:after {
+      content: '';
+    }
+  `}
 `
 
 const ComboHexItem = styled.p`
   ${mediumType};
   margin-right: ${spacing.single_pad};
+  width: 100%;
+  ${media.small`
+    padding-left: ${spacing.single_pad};
+  `}
 `
 
 const ComboHex = styled.div`

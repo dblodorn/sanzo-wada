@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import { withStore, ColorSwatches, ColorTable, Title } from './../components'
-import { flexRow, StyledButton, media, ButtonHref, ButtonLink } from './../styles'
+import { flexRow, StyledButton, media, ButtonHref, ButtonLink, flexColumn } from './../styles'
 import { colors, spacing, shared, breakpoints } from './../styles/theme.json'
 
 class Landing extends Component {
@@ -57,20 +57,32 @@ const StyleMenu = styled.menu`
   top: 0px;
   z-index: 9000;
   background-color: ${colors.white};
+  ${media.small`
+    ${flexColumn};
+    padding: ${spacing.single_pad} 0 0;
+  `}
 `
 
 const ButtonWrapper = styled.div`
   display: flex;
-  height: ${shared.nav_height};
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  height: ${shared.nav_height};
   margin-left: auto;
   padding-left: ${spacing.single_pad};
   button,
   a {
     margin-right: ${spacing.single_pad};
+    ${media.small`
+      margin-bottom: ${spacing.single_pad};
+    `}
   }
   ${media.small`
     margin: auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    height: auto;
+    padding: ${spacing.single_pad} ${spacing.single_pad} 0;
   `}
 `

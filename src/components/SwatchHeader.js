@@ -1,24 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
 import { spacing, colors, shared } from './../styles/theme.json'
-import { flexRowCenteredVert, ButtonLink, flexRow } from './../styles'
+import { flexRowCenteredVert, ButtonLink, flexRow, flexColumn, media } from './../styles'
 
 export default (props) =>
   <Header>
     <LeftInfo>
       {props.children}
     </LeftInfo>
-    <ButtonLink to={'/'}>
-      <span>Index</span>
-    </ButtonLink>
+    <RightSide>
+      <ButtonLink to={'/'}>
+        <span>Index</span>
+      </ButtonLink>
+    </RightSide>
   </Header>
 
 // STYLES
 const Header = styled.header`
   ${flexRowCenteredVert};
-  padding: 0 ${spacing.single_pad};
+  padding: 0;
   background-color: ${colors.white};
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -28,10 +30,37 @@ const Header = styled.header`
   color: ${colors.med_grey};
   text-align: left;
   justify-content: flex-end;
+  ${media.small`
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: auto;
+    padding: 1.5rem 0;
+  `}
 `
 
 const LeftInfo = styled.div`
   ${flexRow};
   margin-right: auto;
-  padding-top: 4px;
+  padding-right: ${spacing.single_pad};
+  padding-left: ${spacing.single_pad};
+  height: 100%;
+  align-items: center;
+  ${media.small`
+    ${flexColumn};
+    padding-left: 0;
+    align-items: flex-start;
+    padding-top: 0;
+  `}
+`
+
+const RightSide = styled.div`
+  padding-right: ${spacing.single_pad};
+  display: flex;
+  align-items: center;
+  height: 100%;
+  ${media.small`
+    height: auto;
+    padding: ${spacing.single_pad} ${spacing.single_pad} 0;
+  `}
 `

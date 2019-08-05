@@ -4,12 +4,6 @@ import { media, flexColumn } from './styles'
 import { colors, fonts } from './styles/theme.json'
 
 class Document extends Component {
-  constructor(props) {
-    super(props);
-  }
-  componentWillMount() {
-    window.scrollTo(0, 0)
-  }
   render() {
     return (
       <Main>
