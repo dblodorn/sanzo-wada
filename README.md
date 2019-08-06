@@ -12,6 +12,8 @@ Major thanks to [@gka](https://github.com/gka) for authoring the amazing color m
 + Translate Colors / intro to Japanese.
 + Allow user to make a list of favorites and save to data uri for sharing etc.
 
+### If you have thoughts on interesting features that could be added please leave a note in [issues!](https://github.com/dblodorn/sanzo-wada/issues/2)
+
 -----
 
 348 color combinations originated by Sanzo Wada (1883-1967) who, in that time of increasingly avant-grade and diversified use of color, was quick to focus on the importance of color and laid the foundation for contemporary color research. Sanzo Wada was active as an artist, art school instructor, costume designer for the movies and the theater, and kimono and fashion designer who employed his extensive and versatile talents to do innovative work that centered primarily on visual perception and form.
