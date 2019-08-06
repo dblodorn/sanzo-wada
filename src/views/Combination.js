@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { comboData, SwatchHeader } from './../components'
-import { flexRow, SwatchLink, mediumType, media } from './../styles'
+import { comboData, SwatchHeader, CopyHex } from './../components'
+import { flexRow, SwatchLink, ComboTitle, ComboHex } from './../styles'
 import { spacing, shared } from './../styles/theme.json'
 
 const Swatch = (props) =>
@@ -10,9 +10,7 @@ const Swatch = (props) =>
       <ComboTitle>Combination: {props.slug}</ComboTitle>
       <ComboHex>
         {props.colors.map((color, i) =>
-          <ComboHexItem key={`${props.slug}-title-${i}`} style={{ color: color.hex }}>
-            {color.hex}
-          </ComboHexItem>
+          <CopyHex hex={color.hex } key={`${props.slug}-title-${i}`}/>
         )}
       </ComboHex>
     </SwatchHeader>
@@ -79,32 +77,4 @@ const ColorBar = styled.div`
       opacity: 1;
     }
   }
-`
-
-const ComboTitle = styled.h1`
-  ${mediumType};
-  &:after {
-    content: '|';
-    padding: 0 ${spacing.single_pad};
-  }
-  ${media.small`
-    padding: 0 ${spacing.single_pad} ${spacing.single_pad};
-    &:after {
-      content: '';
-    }
-  `}
-`
-
-const ComboHexItem = styled.p`
-  ${mediumType};
-  margin-right: ${spacing.single_pad};
-  width: 100%;
-  ${media.small`
-    padding-left: ${spacing.single_pad};
-  `}
-`
-
-const ComboHex = styled.div`
-  margin-left: .5rem;
-  ${flexRow};
 `

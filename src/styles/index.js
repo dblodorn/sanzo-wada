@@ -47,6 +47,21 @@ const simpleFade = keyframes`
   }
 `
 
+const fadeUp = keyframes`
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+`
+
 const animationPopIn = css`
   animation: ${fadesIn} 2500ms cubic-bezier(0,1,.2,.99) 0s normal;
   animation-fill-mode: both;
@@ -57,6 +72,14 @@ const animationPopIn = css`
 const animationFadeIn = (time, delay) => {
   return css`
     animation: ${simpleFade} ${time}ms ease normal;
+    animation-delay: ${delay}ms;
+    animation-fill-mode: both;
+  `
+}
+
+const animationFadeUp = (time, delay) => {
+  return css`
+    animation: ${fadeUp} ${time}ms ease normal;
     animation-delay: ${delay}ms;
     animation-fill-mode: both;
   `
@@ -255,6 +278,26 @@ const ComboLink = styled(Link)`
   }
 `
 
+const ComboTitle = styled.h1`
+  ${mediumType};
+  padding-left: ${spacing.single_pad};
+  padding-right: calc(${spacing.single_pad} - 4px);
+  &:after {
+    content: '|';
+    padding-left: ${spacing.single_pad};
+  }
+  ${media.small`
+    padding: 0 ${spacing.single_pad} ${spacing.single_pad};
+    &:after {
+      content: '';
+    }
+  `}
+`
+
+const ComboHex = styled.div`
+  ${flexRow};
+`
+
 const buttonStyle = css`
   ${buttonInit};
   ${microType};
@@ -342,5 +385,8 @@ export {
   ButtonLink,
   ComboLink,
   animationFadeIn,
-  SmallLink
+  SmallLink,
+  ComboTitle,
+  ComboHex,
+  animationFadeUp
 }

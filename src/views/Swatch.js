@@ -1,17 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import { swatchData, SwatchHeader } from './../components'
-import { flexColumn, ComboLink, mediumType, media, bigType } from './../styles'
-import { spacing, shared, colors } from './../styles/theme.json'
+import { swatchData, SwatchHeader, CopyHex } from './../components'
+import { flexColumn, ComboLink, ComboHex, bigType, ComboTitle } from './../styles'
+import { spacing, colors } from './../styles/theme.json'
 
 const Swatch = (props) => {
   return (
     <React.Fragment>
       <SwatchHeader>
-        <SwatchTitle>{props.name}  |  <span style={{ color: props.hex }}>{props.hex}</span></SwatchTitle>
+        <ComboTitle>
+          {props.name}
+        </ComboTitle>
+        <ComboHex>
+          <CopyHex hex={props.hex} />
+        </ComboHex>
       </SwatchHeader>
       <SwatchSection style={{ backgroundColor: props.hex }}>
-        <ComboTitle><span>Combinations:</span></ComboTitle>
+        <ComboHeader><span>Combinations:</span></ComboHeader>
         <ComboList>
           {props.combinations.map((combo, i) =>
             <ComboLink to={`/combination/${combo}`} key={`${props.slug}-${combo}`}>{combo}</ComboLink>
@@ -38,15 +43,8 @@ const ComboList = styled.menu`
   border-bottom: 1px solid ${colors.grey};
 `
 
-const ComboTitle = styled.h2`
+const ComboHeader = styled.h2`
   ${bigType};
   padding: 0 ${spacing.single_pad} ${spacing.single_pad};
   color: ${colors.grey};
-`
-
-const SwatchTitle = styled.h1`
-  ${mediumType};
-  ${media.small`
-    padding: 0 ${spacing.single_pad};
-  `}
 `

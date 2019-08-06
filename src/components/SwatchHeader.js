@@ -43,7 +43,6 @@ const LeftInfo = styled.div`
   ${flexRow};
   margin-right: auto;
   padding-right: ${spacing.single_pad};
-  padding-left: ${spacing.single_pad};
   height: 100%;
   align-items: center;
   ${media.small`
@@ -51,6 +50,7 @@ const LeftInfo = styled.div`
     padding-left: 0;
     align-items: flex-start;
     padding-top: 0;
+    padding-left: ${spacing.single_pad};
   `}
 `
 

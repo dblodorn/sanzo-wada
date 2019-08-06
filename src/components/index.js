@@ -3,6 +3,7 @@ import ColorTable from './ColorTable'
 import ColorSwatches from './ColorSwatches'
 import SwatchHeader from './SwatchHeader'
 import Title from './Title'
+import CopyHex from './CopyHex'
 // HOC
 import withStore from './HOC/withStore'
 import swatchData from './HOC/swatchData'
@@ -15,5 +16,6 @@ export {
   swatchData,
   SwatchHeader,
   comboData,
-  Title
+  Title,
+  CopyHex
 }

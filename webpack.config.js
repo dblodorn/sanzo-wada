@@ -1,9 +1,8 @@
-const webpack = require('webpack');
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const WebpackShellPlugin = require('webpack-shell-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const pathsToClean = [
   'dist'
@@ -47,17 +46,6 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin([
       { from: './assets/**/*', to: './' }
-    ]),
-    new WebpackShellPlugin({
-      onBuildStart: [
-        'echo "Webpack Start"'
-      ],
-      onBuildEnd: [
-        'echo "Webpack Done"'
-      ],
-      onBuildExit: [
-        'echo "Webpack Exit"'
-      ]
-    })
+    ])
   ]
 };
