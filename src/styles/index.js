@@ -265,12 +265,15 @@ const SwatchLink = styled(Link)`
   top: 0;
   left: 0;
   cursor: pointer;
-  color: ${colors.grey};
+  color: ${(props) =>
+    chroma.contrast(props.hex, colors.grey) > 2 ? colors.grey : colors.black};
+
 `
 
 const ComboLink = styled(Link)`
-  ${bigType};  
-  color: ${colors.grey};
+  ${bigType};
+  color: ${(props) =>
+    chroma.contrast(props.hex, colors.grey) > 2 ? colors.grey : colors.med_grey};
   margin-bottom: ${spacing.double_pad};
   display: inline-flex;
   &:hover {

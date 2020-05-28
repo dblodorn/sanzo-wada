@@ -18,7 +18,7 @@ const Swatch = (props) =>
       <ComboWrapper>
         {props.colors.map((color, i) =>
           <ColorBar key={`${props.slug}-${i}`} style={{ backgroundColor: color.hex }}>
-            <SwatchLink to={`/swatch/${color.slug}`}>
+            <SwatchLink to={`/swatch/${color.slug}`} hex={color.hex}>
               <p className={'name'}>{color.name}</p>
             </SwatchLink>
           </ColorBar>

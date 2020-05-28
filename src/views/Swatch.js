@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import chroma from 'chroma-js'
 import { swatchData, SwatchHeader, CopyHex } from './../components'
 import { flexColumn, ComboLink, ComboHex, bigType, ComboTitle } from './../styles'
 import { spacing, colors } from './../styles/theme.json'
@@ -16,10 +17,10 @@ const Swatch = (props) => {
         </ComboHex>
       </SwatchHeader>
       <SwatchSection style={{ backgroundColor: props.hex }}>
-        <ComboHeader><span>Combinations:</span></ComboHeader>
+        <ComboHeader hex={props.hex}><span>Combinations:</span></ComboHeader>
         <ComboList>
           {props.combinations.map((combo, i) =>
-            <ComboLink to={`/combination/${combo}`} key={`${props.slug}-${combo}`}>{combo}</ComboLink>
+            <ComboLink to={`/combination/${combo}`} key={`${props.slug}-${combo}`} hex={props.hex}>{combo}</ComboLink>
           )}
         </ComboList>
       </SwatchSection>
@@ -46,5 +47,6 @@ const ComboList = styled.menu`
 const ComboHeader = styled.h2`
   ${bigType};
   padding: 0 ${spacing.single_pad} ${spacing.single_pad};
-  color: ${colors.grey};
+  color: ${(props) =>
+    chroma.contrast(props.hex, colors.grey) > 2 ? colors.grey : colors.med_grey};
 `
