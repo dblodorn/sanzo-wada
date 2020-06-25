@@ -48,12 +48,17 @@
   {
     "name": "Rainette Green",
     "cmyk": [ 42, 20, 62, 10 ],
+    "combinations": [ 73, 162, 188, 266, 301 ]
+  },
+  {
+    "name": "Chromium Green",
+    "cmyk": [ 50, 16, 58, 20 ],
     "combinations": [ 105, 200, 219, 283 ]
   },
   {
     "name": "Pistachio Green",
     "cmyk": [ 64, 29, 56, 6 ],
-    "combinations": [ 127, 237 ]
+    "combinations": [ 127, 137 ]
   },
   {
     "name": "Sea Green",

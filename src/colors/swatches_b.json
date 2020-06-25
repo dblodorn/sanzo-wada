@@ -33,12 +33,12 @@
   {
     "name": "Pinkish Cinnamon",
     "cmyk": [ 5, 32, 53, 0 ],
-    "combinations": [ 78, 175, 232, 258, 263, 292, 305, 310 ]
+    "combinations": [ 78, 161, 175, 232, 258, 263, 292, 305, 310 ]
   },
   {
     "name": "Cinnamon Buff",
     "cmyk": [ 0, 25, 57, 0 ],
-    "combinations": [ 23, 127, 137, 180, 210, 234, 246, 323, 344 ]
+    "combinations": [ 23 , 127, 137, 180, 210, 234, 246, 323, 344 ]
   },
   {
     "name": "Cream Yellow",
@@ -48,7 +48,7 @@
   {
     "name": "Golden Yellow",
     "cmyk": [ 2, 42, 74, 0 ],
-    "combinations": [ 26, 81, 132, 138, 140, 179 ]
+    "combinations": [ 26, 81, 132, 138, 140, 179, 206, 229, 309, 315 ]
   },
   {
     "name": "Vinaceous Cinnamon",
@@ -118,7 +118,7 @@
   {
     "name": "Yellow Orange",
     "cmyk": [ 0, 45, 100, 0 ],
-    "combinations": [ 22, 53, 89, 151, 171, 209, 222, 235, 267, 288, 297, 312, 319, 335 ]
+    "combinations": [ 2, 53, 89, 151, 171, 209, 222, 235, 267, 288, 297, 312, 319, 335 ]
   },
   {
     "name": "Apricot Orange",
@@ -163,6 +163,11 @@
   {
     "name": "Citron Yellow",
     "cmyk": [35, 17, 95, 0 ],
+    "combinations": [ 40, 87, 145, 150, 153, 196, 305, 323 ]
+  },
+  {
+    "name": "Citrine",
+    "cmyk": [36, 32, 100, 0 ],
     "combinations": [ 59, 93, 132, 133, 262 ]
   },
   {
@@ -238,7 +243,7 @@
   {
     "name": "Vandyke Brown",
     "cmyk": [ 56, 71, 97, 52 ],
-    "combinations": [ 110, 113, 118, 182, 192 ]
+    "combinations": [ 110, 113, 118, 182, 192, 328 ]
   }
  ]
 }
