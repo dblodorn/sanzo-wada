@@ -17,7 +17,7 @@ const cv = (input) => {
 }
 
 const returnSlug = (title) => {
-  return title.replace(/\s+/g, '-').toLowerCase()
+  return title.replace('/', '').replace(/\s+/g, '-').toLowerCase()
 }
 
 export default (swatches) => {
