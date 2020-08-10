@@ -16,8 +16,8 @@ const Swatch = (props) => {
           <CopyHex hex={props.hex} />
         </ComboHex>
       </SwatchHeader>
-      <SwatchSection style={{ backgroundColor: props.hex }}>
-        <ComboHeader hex={props.hex}><span>Combinations:</span></ComboHeader>
+      <SwatchSection style={{ backgroundColor: props.hex }} hex={props.hex}>
+        <ComboHeader><span>Combinations:</span></ComboHeader>
         <ComboList>
           {props.combinations.map((combo, i) =>
             <ComboLink to={`/combination/${combo}`} key={`${props.slug}-${combo}`} hex={props.hex}>{combo}</ComboLink>
@@ -36,17 +36,18 @@ const SwatchSection = styled.section`
   width: 100%;
   flex: 1;
   padding: ${spacing.double_pad} 0 ${spacing.big_pad};
+  * {
+    color: ${(props) =>
+      chroma.contrast(props.hex, colors.grey) > 2 ? colors.grey : colors.black}!important;
+  }
 `
 
 const ComboList = styled.menu`
   ${flexColumn};
   padding: 0 ${spacing.single_pad};
-  border-bottom: 1px solid ${colors.grey};
 `
 
 const ComboHeader = styled.h2`
   ${bigType};
   padding: 0 ${spacing.single_pad} ${spacing.single_pad};
-  color: ${(props) =>
-    chroma.contrast(props.hex, colors.grey) > 2 ? colors.grey : colors.med_grey};
 `

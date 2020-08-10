@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { comboData, SwatchHeader, CopyHex } from './../components'
-import { flexRow, SwatchLink, ComboTitle, ComboHex, ButtonLink } from './../styles'
+import { flexRow, SwatchLink, ComboTitle, ComboHex, ButtonLink, media } from './../styles'
 import { spacing, shared } from './../styles/theme.json'
 
 const Swatch = (props) =>
@@ -13,14 +13,18 @@ const Swatch = (props) =>
           <CopyHex hex={color.hex } key={`${props.slug}-title-${i}`}/>
         )}
       </ComboHex>
-      {props.slug !== '1' && (
-        <ButtonLink to={`/combination/${props.slug - 1}`}>
-          <span>&lt; Prev</span>
-        </ButtonLink>
-      )}
-      <ButtonLink to={`/combination/${parseInt(props.slug, 10) + 1}`}>
-        <span>Next &gt;</span>
-      </ButtonLink>
+      <PrevNext>
+        {props.slug !== '1' && (
+          <ButtonLink className="prev" to={`/combination/${props.slug - 1}`}>
+            <span>Prev</span>
+          </ButtonLink>
+        )}
+        {props.slug !== '348' && (
+          <ButtonLink className="next" to={`/combination/${parseInt(props.slug, 10) + 1}`}>
+            <span>Next</span>
+          </ButtonLink>
+        )}
+      </PrevNext>
     </SwatchHeader>
     <ComboSection>
       <ComboWrapper>
@@ -38,6 +42,20 @@ const Swatch = (props) =>
 export default comboData(Swatch)
 
 // STYLES
+const PrevNext = styled.div`
+  ${flexRow};
+  align-items: center;
+  height: 100%;
+  margin-left: auto;
+  a:first-child {
+    margin-right: ${spacing.single_pad};
+  }
+  ${media.small`
+    margin-left: 0;
+    margin-top: ${spacing.single_pad};
+  `}
+`
+
 const ComboSection = styled.section`
   display: flex;
   width: 100%;

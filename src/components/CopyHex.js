@@ -41,9 +41,6 @@ const ComboHexItem = styled.p`
   ${mediumType};
   margin-right: .5rem;
   width: 100%;
-  ${media.small`
-    padding-left: ${spacing.single_pad};
-  `}
 	&:after {
 		${smallType};
 		content: '${props => props.hexVal} Copied';

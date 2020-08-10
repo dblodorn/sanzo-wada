@@ -35,7 +35,7 @@ const Header = styled.header`
     justify-content: flex-start;
     align-items: flex-start;
     height: auto;
-    padding: 1.5rem 0;
+    padding: ${spacing.single_pad} 0;
   `}
 `
 
@@ -45,6 +45,7 @@ const LeftInfo = styled.div`
   padding-right: ${spacing.single_pad};
   height: 100%;
   align-items: center;
+  flex: 1;
   ${media.small`
     ${flexColumn};
     padding-left: 0;

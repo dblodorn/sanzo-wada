@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
+import chroma from 'chroma-js'
 import { colors, breakpoints } from './../styles/theme.json'
-import { smallType, media, SmallLink } from './../styles'
-import SwatchWrapper from './SwatchWrapper'
+import { smallType, SmallLink } from './../styles'
 
 const returnStyle = (color) => {
   return {
@@ -14,9 +14,11 @@ export default (props) =>
   <ColorIndex>
     <tbody>
       {props.colorList.map((color, i) =>
-        <tr key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)}>
+        <ColorTr key={`c-list_${color.index}-${i}`} style={returnStyle(color.hex)} hex={color.hex}>
           <td>{color.index}</td>
-          <td><SmallLink to={`/swatch/${color.slug}`}>{color.name}</SmallLink></td>
+          <td>
+            <SmallLink to={`/swatch/${color.slug}`}>{color.name}</SmallLink>
+          </td>
           <td className={'captialize'}>{color.hex}</td>
           {(props.breakPoint >= breakpoints.desktop) &&
             <Fragment>
@@ -30,18 +32,13 @@ export default (props) =>
               <td>{color.use_count}</td>
             </Fragment>
           }
-        </tr>
+        </ColorTr>
       )}
     </tbody>
   </ColorIndex>
 
 // STYLES
-const ColorIndex = styled.table`
-  width: 100%;
-  text-align: left;
-  color: ${colors.grey};
-  ${smallType};
-  line-height: 1.125;
+const ColorTr = styled.tr`
   th {
     border-right: 1px solid ${colors.grey};
     padding: 1rem;
@@ -64,4 +61,15 @@ const ColorIndex = styled.table`
       margin-right: .5rem;
     }
   }
+  * {
+    color: ${(props) =>
+      chroma.contrast(props.hex, colors.grey) > 2 ? colors.grey : colors.black}!important;
+  }
+`
+
+const ColorIndex = styled.table`
+  ${smallType};
+  width: 100%;
+  text-align: left;
+  line-height: 1.125;
 `

@@ -61,6 +61,11 @@ const StyleMenu = styled.menu`
     ${flexColumn};
     padding: ${spacing.single_pad} 0 0;
   `}
+  ${media.small`
+    h1 {
+      padding-left: ${spacing.single_pad};
+    }
+  `}
 `
 
 const ButtonWrapper = styled.div`

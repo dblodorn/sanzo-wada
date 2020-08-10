@@ -290,7 +290,7 @@ const ComboTitle = styled.h1`
     padding-left: ${spacing.single_pad};
   }
   ${media.small`
-    padding: 0 ${spacing.single_pad} ${spacing.single_pad};
+    padding: 0 0 ${spacing.micro_pad};
     &:after {
       content: '';
     }
