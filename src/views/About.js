@@ -11,7 +11,6 @@ const copy = `
 <p>Wada became a faculty member of the Imperial Art Institute <span lang="ja-jp">日本芸術院</span> and founded the Japan Standard Color Association <span lang="ja-jp">日本標準色協会</span> in 1927. In 1932 he was appointed professor at the Design Department of Tokyo School of the Arts where he served until 1944. Wada was a leading color theorist and created one of the first systematic approaches to color in Japan, published in the eleven-volume boxed series Color Schemes <span lang="ja-jp">配色総鑑</span> in 1934. The series was the first mass-produced in-depth analysis of color pairings and combinations, laying the groundwork for modern color studies in Japan. Each box contained another immaculately-bound two-color printed gatefold box which held a series of 30 postcard-sized pieces of cardstock each. The cards were incredibly precisely printed and die-cut squares of color combinations glued on top of bilingual English, kanji, and hiragana letterpress-printed color descriptions of each color dyad, triad, or tetrad. The entire collection is a tour de force of both print production and consideration of the impact of color.</p> 
 <p>Wada reorganized the Japan Standard Color Association into the Japan Color Research Laboratory in 1945, and served as its president. He was also an award-winning designer—his poster for the ill-fated 1940 Tokyo Olympics won out against other competitors in the late 1930s and Wada also won the Costume Design Award at the 27th Academy Awards in 1954 for his work for the movie Hell’s Gate <span lang="ja-jp">地獄門</span>. Wada was prolific in regards to designing postcards, painting, printmaking and creating illustration work.</p>
 <p>His book The Story of Color <span lang="ja-jp">色彩の話</span> was published in 1952 and reprinted in 1957.</p>
-<p>- <a href="http://ianlynam.com/about/" target="_blank">Ian Lynam</a> / 2020</p>
 `
 
 const createMarkup = () => {
@@ -25,6 +24,19 @@ export default () =>
     </SwatchHeader>
     <Section>
       <AboutCopy dangerouslySetInnerHTML={createMarkup()}/>
+      <CreditsWrapper>
+        <AboutCopy>
+          <h3>Colophon</h3>
+          <p>
+            Based on the Book: <a href="http://seigensha.com/en/2016/11/01/978-4-86152-247-5/">A Dictionary of Color Combinations</a>
+            <br/>Design & Development: <a href="https://dain.kim">Dain Blodorn Kim</a>
+            <br/>Biography: <a href="http://ianlynam.com/about/">Ian Lynam</a>
+            <br/>Github Repository: <a href="https://github.com/dblodorn/sanzo-wada">https://github.com/dblodorn/sanzo-wada</a>
+            <br/>Open Source Contributions: <a href="https://github.com/paolotremadio">Paolo Tremadio</a>, <a href="https://github.com/mattdesl">Matt DesLauriers</a>, <a href="https://github.com/fand">Takayosi Amagi</a>
+            <br/>Related Projects: <a href="https://github.com/jmaasch/sanzo">R Package for Data Visualization</a> by <a href="https://github.com/jmaasch">Jacqueline Maasch</a>
+          </p>
+        </AboutCopy>
+      </CreditsWrapper>
     </Section>
   </React.Fragment>
 
@@ -40,7 +52,7 @@ const AboutCopy = styled.article`
   * {
     color: ${colors.black}
   }
-  h2 {
+  h2, h3 {
     ${lgBodyCopy};
     padding-bottom: ${spacing.micro_pad};
   }
@@ -48,8 +60,14 @@ const AboutCopy = styled.article`
     ${mediumType};
     color: ${colors.black};
     padding-bottom: ${spacing.double_pad};
+    line-height: 1.5;
     &:last-child {
       padding-bottom: 0;
     }
   }
+`
+
+const CreditsWrapper = styled.div`
+  border-top: 1px solid ${colors.med_grey};
+  width: 100%;
 `

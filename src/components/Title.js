@@ -7,7 +7,7 @@ import { spacing, shared } from './../styles/theme.json'
 export default () =>
   <TitleWrapper>
     <Link to={'/'}>
-      <H1>Sanzo Wada | A Dictionary of Color Combinations.</H1>
+      <H1>Wada Sanzo | A Dictionary of Color Combinations.</H1>
     </Link>
   </TitleWrapper>
 
