@@ -1,18 +1,9 @@
 const webpack = require('webpack')
+
 const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-
-const pathsToClean = [
-  'dist'
-]
-
-const cleanOptions = {
-  exclude:  ['_redirects', '.dat'],
-  verbose:  true,
-  dry:      false
-}
 
 module.exports = {
   module: {
@@ -31,21 +22,22 @@ module.exports = {
     filename: '[name].[hash].js',
     publicPath: '/'
   },
-  devServer: {
-    publicPath: '/',
-    historyApiFallback: true,
-  },
   plugins: [
-    new CleanWebpackPlugin(
-      pathsToClean,
-      cleanOptions
-    ),
     new HtmlWebpackPlugin({
       template: './index.html'
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin([
       { from: './assets/**/*', to: './' }
-    ])
-  ]
-};
+    ]),
+    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(
+      [
+        'dist'
+      ],
+      {
+        verbose:  true,
+        dry:      false
+      }
+    ),
+  ],
+}
