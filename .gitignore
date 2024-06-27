@@ -1,15 +1,16 @@
-.DS_Store
-node_modules/
-dist/*
-!dist/_redirects
-!dist/.dat
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-# _comps
-# Editor directories and files
 .idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+.DS_Store
+node_modules
+.turbo
+*.log
+.next
+dist
+dist-ssr
+*.local*
+.cache
+server/dist
+public/dist
+coverage
+.nvmrc
+.vercel
+**/nodejs.html
