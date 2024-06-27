@@ -1,58 +1,39 @@
 {
-  "name": "swdoc",
+  "name": "sanzo-wada",
   "version": "1.0.0",
-  "description": "sanzo wada dicitionary of color",
+  "description": "",
   "main": "index.js",
-  "repository": "https://github.com/dblodorn/sanzo-wada",
-  "author": "Dain Blodorn Kim",
-  "license": "ISC",
-  "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --mode development --open",
-    "build": "webpack --mode production"
+    "dev:alpha": "pnpm cd apps/sanzo-wada-alpha && turbo run dev",
+    "build:alpha": "pnpm cd apps/sanzo-wada-alpha && turbo run build",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky install",
+    "clean": "turbo run clean && rm -rf node_modules"
   },
-  "babel": {
-    "presets": [
-      "env",
-      "react",
-      "stage-2"
-    ],
-    "plugins": [
-      "babel-plugin-styled-components"
-    ]
-  },
-  "dependencies": {
-    "chroma-js": "^1.3.7",
-    "connected-react-router": "^4.4.1",
-    "history": "^4.7.2",
-    "react": "^16.8.6",
-    "react-autocomplete": "^1.8.1",
-    "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "^16.8.6",
-    "react-redux": "^5.0.7",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-scroll": "^1.7.10",
-    "react-url-query": "^1.4.0",
-    "redux": "^4.0.0",
-    "redux-devtools-extension": "^2.13.5",
-    "redux-thunk": "^2.3.0",
-    "styled-components": "^3.3.3",
-    "webfontloader": "^1.6.28"
+  "author": "Dain Blodorn Kim",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-styled-components": "^1.5.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "clean-webpack-plugin": "^0.1.19",
-    "copy-webpack-plugin": "^4.5.2",
-    "html-webpack-plugin": "^3.2.0",
-    "react-hot-loader": "^4.3.4",
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2"
+    "eslint": "^9.5.0",
+    "husky": "^9.0.11",
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.5"
+  },
+  "packageManager": "pnpm@8.15.3",
+  "lint-staged": {
+    "apps/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write"
+    ],
+    "packages/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ],
+    "**/*.{ts,tsx}": [
+      "tsc-files --noEmit"
+    ]
   }
 }
