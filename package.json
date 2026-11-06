@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm install && turbo run build && cp -r apps/sanzo-wada-alpha/dist .",
-    "dev:alpha": "pnpm cd apps/sanzo-wada-alpha && turbo run dev",
-    "build:alpha": "pnpm cd apps/sanzo-wada-alpha && turbo run build",
+    "dev:alpha": "turbo run dev --filter=sanzo-wada-alpha",
+    "build:alpha": "turbo run build --filter=sanzo-wada-alpha",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "clean": "turbo run clean && rm -rf node_modules"
