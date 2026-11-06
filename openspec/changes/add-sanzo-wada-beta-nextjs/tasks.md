@@ -54,6 +54,6 @@
 
 ## 8. Vercel deployment
 
-- [ ] 8.1 Create the Vercel project (after confirming its name and team with the user): link it to this repository, set Root Directory to `apps/sanzo-wada-beta`, framework Next.js, build command `turbo run build --filter=sanzo-wada-beta`, and ignored build step `npx turbo-ignore`. Verify the first preview deployment succeeds.
-- [ ] 8.2 Re-run `verify-routes.ts` against the preview deployment URL. Verify it exits 0 and the 404 cases return 404 from Vercel.
-- [ ] 8.3 Push a commit that only touches `apps/sanzo-wada-alpha` and confirm the Vercel build is skipped by `turbo-ignore`. Verify that a Netlify deploy preview of this branch still publishes alpha unchanged.
+- [x] 8.1 Create the Vercel project (after confirming its name and team with the user): link it to this repository, set Root Directory to `apps/sanzo-wada-beta`, framework Next.js, build command `turbo run build --filter=sanzo-wada-beta`, and ignored build step `npx turbo-ignore`. Verify the first preview deployment succeeds.
+- [x] 8.2 Re-run `verify-routes.ts` against the preview deployment URL. Verify it exits 0 and the 404 cases return 404 from Vercel.
+- [x] 8.3 Push a commit that only touches `apps/sanzo-wada-alpha` and confirm the Vercel build is skipped by `turbo-ignore`. Verify that a Netlify deploy preview of this branch still publishes alpha unchanged.

@@ -128,7 +128,7 @@ Load `fonts.css` with a `<link rel="stylesheet" href="/assets/fonts.css">` in th
 - **Vercel project:** a new project linked to this repository.
   - Root Directory `apps/sanzo-wada-beta`, framework preset Next.js
   - Vercel detects pnpm from the root lockfile and installs the workspace
-  - Build command `turbo run build --filter=sanzo-wada-beta`, run from the monorepo root through Vercel's Turborepo support. The ignored build step is `npx turbo-ignore`, so commits that only touch alpha don't deploy beta.
+  - Build command: the Next.js default (`next build`), run in the app directory after Vercel installs the whole workspace from the root lockfile. The ignored build step is `npx turbo-ignore --fallback=HEAD^1`, so commits that only touch alpha don't deploy beta.
   - No `netlify.toml` changes, and no Vercel config in alpha.
 
 ### 9. Verification instead of a test suite
@@ -175,3 +175,9 @@ These are the results of tasks 7.2–7.4, run against `next start` locally.
   - Below 1240px, the pre-rendered HTML shows the desktop menu labels and list columns until hydration. Alpha showed nothing at all until its JavaScript ran.
   - Unknown URLs return a 404 page, where alpha rendered a broken page.
 - **Not automated:** the clipboard contents after copy-hex. The "<hex> Copied" notice and its 2.5s reset were checked with a real click. Reading the clipboard back needs a browser permission prompt, so the pasted value should be checked by hand.
+- **Vercel (tasks 8.1–8.3):**
+  - **Project:** `sanzo-wada-beta` in the DB13 team (`prj_12OCog4rLoPw1MkUH5FIoPiv8b4D`), linked to `dblodorn/sanzo-wada` with root `apps/sanzo-wada-beta`, Node 26.x.
+  - **Protection:** deployment protection matches the existing `sanzo-wada` project (`prod_deployment_urls_and_all_previews`), so the production alias `sanzo-wada-beta-db13.vercel.app` is public and previews need Vercel login.
+  - **Routes:** `verify:routes` passes against `https://sanzo-wada-beta-db13.vercel.app`.
+  - **Build skipping:** `turbo-ignore` was checked locally against an unpushed alpha-only commit ("Ignoring the change") and a beta commit (build proceeds).
+  - **Unrelated failure:** the older `sanzo-wada` Vercel project (root `apps/sanzo-wada-alpha`) fails every build, including master's. It is pinned to Node 20.x, which Vercel has retired. This change doesn't touch it.
