@@ -1,0 +1,52 @@
+{
+  "breakpoints": {
+    "mobile": 0,
+    "desktop": 1240
+  },
+  "transitions": {
+    "stiffness_fast": 300,
+    "damping_fast": 30
+  },
+  "heights": {
+    "header": "7rem",
+    "mobile_header": "6rem",
+    "footer": "16rem",
+    "player_icons": "2.5rem"
+  },
+  "spacing": {
+    "micro_pad": ".75rem",
+    "single_pad": "1.5rem",
+    "double_pad": "3rem",
+    "big_pad": "6rem"
+  },
+  "colors": {
+    "white": "#ffffff",
+    "black": "#1b3644",
+    "grey": "#dbdbdb",
+    "med_grey": "#939393",
+    "dk_grey": "#888888",
+    "blue": "#0024cc"
+  },
+  "fonts": {
+    "sans": "'fff-regular', system-ui, sans-serif",
+    "italic": "'fff-italic', system-ui, sans-serif",
+    "sizes": {
+      "micro": "1rem",
+      "lg": "10vmin",
+      "med": "2rem",
+      "med_lg": "6vmin",
+      "sm": "1.25rem"
+    }
+  },
+  "shared": {
+    "logo_size": "25vmin",
+    "nav_height": "5rem",
+    "border_weight": "2px",
+    "logo_size_desk": "8rem",
+    "article_width": "70rem",
+    "max_width": "74rem",
+    "super_wide": "124rem",
+    "column_width": "40rem",
+    "menu_width": "6.5rem"
+  }
+}
