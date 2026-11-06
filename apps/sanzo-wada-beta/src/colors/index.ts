@@ -1,6 +1,6 @@
 import colors from './colors'
 import { parseRawColors } from './parse'
-import type { Color, Combination, RawColor, SwatchGroup } from './types'
+import type { Color, Combination, GroupId, GroupSummary, RawColor, SwatchGroup } from './types'
 import { swatches_a } from './swatches_a.json'
 import { swatches_b } from './swatches_b.json'
 import { swatches_c } from './swatches_c.json'
@@ -10,8 +10,18 @@ import { swatches_f } from './swatches_f.json'
 
 export type * from './types'
 export { legacySlugs } from './legacySlugs'
+export {
+  combinationsWith,
+  nearestColors,
+  normalizeHex,
+  normalizeName,
+  searchColors,
+} from './queries'
 
 export const COMBINATION_COUNT = 348
+
+// One id per source file, in order: swatches_a.json is group a
+export const GROUP_IDS: readonly GroupId[] = ['a', 'b', 'c', 'd', 'e', 'f']
 
 const swatchLists: RawColor[][] = [
   parseRawColors('a', swatches_a),
@@ -41,6 +51,16 @@ for (const color of allColors) {
 }
 
 export const getColorBySlug = (slug: string): Color | undefined => colorsBySlug.get(slug)
+
+export const groups: GroupSummary[] = swatchGroups.map((group, i) => ({
+  id: GROUP_IDS[i],
+  count: group.swatches.length,
+  slugs: group.swatches.map((color) => color.slug),
+}))
+
+const groupBySlug = new Map(groups.flatMap((group) => group.slugs.map((slug) => [slug, group.id])))
+
+export const groupOf = (slug: string): GroupId | undefined => groupBySlug.get(slug)
 
 export const colorSlugs = (): string[] => allColors.map((color) => color.slug)
 

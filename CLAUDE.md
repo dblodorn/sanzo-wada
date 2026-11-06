@@ -19,12 +19,13 @@ pnpm build:beta                                # next build for beta (all pages 
 pnpm --filter sanzo-wada-beta typecheck        # tsc --noEmit (strict)
 pnpm --filter sanzo-wada-beta verify:colors    # beta's color library vs alpha's runtime color lists
 pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs, legacy slug redirects, /assets/colors.json and 404 cases against a running beta (after build + `pnpm start`)
+pnpm --filter sanzo-wada-beta verify:api http://localhost:3000     # every REST endpoint and error case, links, OpenAPI validity, /llms.txt, and an MCP session whose tool results must equal the REST responses
 pnpm clean
 ```
 
 Every build script is filtered to one app.
 
-There are no tests and no lint script. Beta's checks are the typecheck and the two `verify:*` scripts. `packages/sw-eslint-config` is scaffolding that nothing uses yet. Beta's `tsconfig.json` extends `packages/sw-tsconfig` (`@sw/tsconfig/base.json`). Formatting is Prettier (`.prettierrc`: no semicolons, single quotes, width 90, es5 trailing commas). The `lint-staged` config in the root `package.json` runs it on commit through husky.
+There are no tests and no lint script. Beta's checks are the typecheck and the three `verify:*` scripts. `packages/sw-eslint-config` is scaffolding that nothing uses yet. Beta's `tsconfig.json` extends `packages/sw-tsconfig` (`@sw/tsconfig/base.json`). Formatting is Prettier (`.prettierrc`: no semicolons, single quotes, width 90, es5 trailing commas). The `lint-staged` config in the root `package.json` runs it on commit through husky.
 
 ## Architecture (`apps/sanzo-wada-alpha`)
 
@@ -53,13 +54,14 @@ The view on `/combination/:n` hardcodes `348` as the last combination for its pr
 
 Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS.
 
-**Static rendering.** Every page is pre-rendered at build time. `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
+**Static rendering.** Every page is pre-rendered at build time. Only the API, MCP and `/llms.txt` routes run per request (see below). `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
 
 **Color library (`src/colors/`).**
 - `types.ts`: `RawColor`, `Color` (alpha's snake_case fields), `SwatchGroup`, `Combination`.
 - `parse.ts`: validates the JSON at load. Each color needs a `slug` of lowercase letters, digits and single hyphens, and CMYK must be four values from 0 to 100, so a bad edit fails the build. `index.ts` also fails the build on a duplicate slug.
 - `colors.ts`: the enrichment, with the same algorithm as alpha, except that the slug comes from the JSON rather than from the name. chroma-js 3 gives output identical to alpha's 1.4.1.
-- `index.ts`: exports `swatchGroups` (index restarts per group), `allColors` (index 1–159), `getColorBySlug`, `getCombination` and `COMBINATION_COUNT`.
+- `index.ts`: exports `swatchGroups` (index restarts per group), `allColors` (index 1–159), `getColorBySlug`, `getCombination`, `COMBINATION_COUNT`, the group listing (`groups`, `groupOf`, `GROUP_IDS`) and the queries below.
+- `queries.ts`: `searchColors` (name match ignoring case and punctuation), `combinationsWith` (combinations containing every given slug), `nearestColors` (CIEDE2000 via chroma `deltaE`) and `normalizeHex`. It imports from `index.ts`, which re-exports it, so nothing in it may read the data at module load (the chroma table is built on first use).
 
 Beta's swatch JSON differs from alpha's in two ways:
 - every color has a stored `slug`. Seven of them are normalized away from alpha's punctuated slugs (`eugenia-red-a`, not `eugenia-red-|-a`).
@@ -74,6 +76,15 @@ Beta's swatch JSON differs from alpha's in two ways:
 - Fonts load from `/assets/fonts.css`, linked in `src/app/layout.tsx`.
 - `public/assets/` is a copy of alpha's `assets/`, except `colors.json`, which is generated (see Static rendering).
 
+**REST API and MCP server.** Both are read-only and have no auth and no state.
+- `src/api/schemas.ts`: zod 4 schemas, the single source of the resource shapes. The TypeScript types, query parsing, the OpenAPI components and the MCP tool schemas all come from them.
+- `src/api/resources.ts`: turns library data into API resources (adds `group`, `url` and `api_url`, built from the request origin). REST handlers and MCP tools must both go through it, so their results stay identical, and `verify:api` checks that.
+- `src/api/http.ts`: response helpers. Successful responses are CDN-cached with a long `s-maxage`, since each deploy starts a fresh cache. Every route re-exports its `POST`/`PUT`/`PATCH`/`DELETE` (JSON 405) and `OPTIONS` (204). CORS headers for `/api/*` are set in `next.config.ts`.
+- `src/api/endpoints.ts`: the endpoint table that both `src/api/openapi.ts` (served at `/api/v1/openapi.json`) and `src/app/llms.txt/route.ts` render from. A new endpoint needs a route under `src/app/api/v1/`, an entry here and scenarios in `verify:api`.
+- `src/app/api/v1/[...rest]/route.ts`: returns the JSON 404 for unknown API paths.
+- `src/mcp/server.ts`: builds the MCP server (5 tools, 2 resource templates) per request. Results carry `structuredContent` equal to the REST `data`, plus a text summary.
+- `src/app/api/mcp/route.ts`: serves the MCP server with `createMcpHandler` from `@modelcontextprotocol/server` (pinned to 2.4.0). It handles both the 2026-07-28 protocol and 2025-era clients. 2025-era replies come back as a single SSE frame.
+
 **Window size.** `src/state/WindowSize.tsx` holds a context with a 50ms throttle. The first render uses width 1240 (desktop), so the server and client HTML match on hydration. The real width is set after mount.
 
-**Deploy.** The Vercel project `sanzo-wada` has its root directory set to `apps/sanzo-wada-beta` and serves the custom domain `sanzo-wada.dmbk.io`, whose DNS (a CNAME to Vercel) is managed in DigitalOcean. Pushes to `master` deploy production. To check a deploy, run `verify:routes https://sanzo-wada.dmbk.io`.
+**Deploy.** The Vercel project `sanzo-wada` has its root directory set to `apps/sanzo-wada-beta` and serves the custom domain `sanzo-wada.dmbk.io`, whose DNS (a CNAME to Vercel) is managed in DigitalOcean. Pushes to `master` deploy production. To check a deploy, run `verify:routes` and `verify:api` with `https://sanzo-wada.dmbk.io`.
