@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm install && turbo run build --filter=sanzo-wada-alpha && cp -r apps/sanzo-wada-alpha/dist .",
     "dev:alpha": "turbo run dev --filter=sanzo-wada-alpha",
     "build:alpha": "turbo run build --filter=sanzo-wada-alpha",
     "dev:beta": "turbo run dev --filter=sanzo-wada-beta",
