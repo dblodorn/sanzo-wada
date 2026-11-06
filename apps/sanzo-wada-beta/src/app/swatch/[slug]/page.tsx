@@ -10,7 +10,7 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: PageProps<'/swatch/[slug]'>) {
   const { slug } = await params
-  const color = getColorBySlug(decodeURIComponent(slug))
+  const color = getColorBySlug(slug)
   if (!color) notFound()
   return <Swatch {...color} />
 }

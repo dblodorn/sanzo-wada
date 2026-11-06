@@ -8,7 +8,13 @@ Provides the typed Sanzo Wada color dataset (159 colors in six swatch groups, 34
 
 ### Requirement: Source dataset is loaded unchanged
 
-The library SHALL load the six swatch groups (a through f) from the existing swatch JSON. Each raw color has a `name`, a `cmyk` tuple of four values from 0 to 100, and a list of combination numbers. Group order, color order within each group, and every raw value SHALL be preserved, with one exception: "Dull Violet Black" has its out-of-range magenta corrected from 106 to 100. A value outside 0–100 SHALL fail the build.
+The library SHALL load the six swatch groups (a through f) from the existing swatch JSON. Each raw color has:
+- a `name`;
+- a `slug`;
+- a `cmyk` tuple of four values from 0 to 100;
+- a list of combination numbers.
+
+Group order, color order within each group, and every raw value SHALL be preserved, with one exception: "Dull Violet Black" has its out-of-range magenta corrected from 106 to 100. A value outside 0–100 SHALL fail the build.
 
 #### Scenario: Group sizes match the source data
 
@@ -18,7 +24,7 @@ The library SHALL load the six swatch groups (a through f) from the existing swa
 #### Scenario: Raw data is not altered
 
 - **WHEN** a color is read from the library
-- **THEN** its name, CMYK values and combination list are the same as in the source JSON, except for the corrected magenta of Dull Violet Black
+- **THEN** its name, slug, CMYK values and combination list are the same as in the source JSON, except for the corrected magenta of Dull Violet Black
 
 #### Scenario: Out-of-range CMYK fails the build
 
@@ -32,9 +38,9 @@ The library SHALL load the six swatch groups (a through f) from the existing swa
 
 ### Requirement: Colors are enriched with derived values
 
-For each color the library SHALL derive:
+For each color the library SHALL provide:
 - `index`: its 1-based position
-- `slug`: from the name, with the first `/` removed, each run of whitespace replaced by `-`, and the result lowercased
+- `slug`: the color's stored slug (see the `swatch-slugs` capability)
 - `cmyk_array`: the raw CMYK values
 - `cmyk`: the string `C:<c> / M:<m> / Y:<y> / K:<k>`
 - `hex`: the CMYK values divided by 100 and converted to a hex color
@@ -42,17 +48,21 @@ For each color the library SHALL derive:
 - `rgb`: the string `R:<r> / G:<g> / B:<b>`
 - `use_count`: the number of combinations the color appears in
 
-Every derived value SHALL be identical to what alpha computes for the same color, except the CMYK fields of the corrected Dull Violet Black.
+Every value SHALL be identical to what alpha computes for the same color, with two exceptions:
+- the CMYK fields of the corrected Dull Violet Black;
+- the slugs of the seven colors whose names contain `|`, `'` or ` - `.
 
 #### Scenario: Derived values match alpha
 
 - **WHEN** every color in the library is compared with alpha's runtime color list
-- **THEN** all 159 colors have the same `index`, `slug`, `hex`, `rgb`, `rgb_array`, `cmyk`, `cmyk_array` and `use_count`, and the only differences are Dull Violet Black's `cmyk` and `cmyk_array`
+- **THEN** all 159 colors have the same `index`, `slug`, `hex`, `rgb`, `rgb_array`, `cmyk`, `cmyk_array` and `use_count`, with only these differences:
+  - Dull Violet Black's `cmyk` and `cmyk_array`;
+  - the `slug` of the seven punctuated colors.
 
 #### Scenario: Slugs keep alpha's punctuation
 
-- **WHEN** slugs are derived for "Eugenia Red | A" and "Hay's Russet"
-- **THEN** the slugs are `eugenia-red-|-a` and `hay's-russet`, exactly as alpha generates them
+- **WHEN** "Eugenia Red | A" and "Hay's Russet" are read from the library
+- **THEN** their slugs are `eugenia-red-a` and `hays-russet`, where alpha has `eugenia-red-|-a` and `hay's-russet`
 
 ### Requirement: Index numbering follows alpha's two lists
 
