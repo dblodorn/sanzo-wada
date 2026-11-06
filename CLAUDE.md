@@ -3,10 +3,8 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 An interactive web version of Sanzo Wada's *A Dictionary of Color Combinations* (348 combinations, 159 colors). There are two apps:
-- `apps/sanzo-wada-alpha` is the original React SPA. It is what production serves today, from Netlify.
-- `apps/sanzo-wada-beta` is a Next.js + TypeScript port with the same styling and behaviour, deployed to its own Vercel project.
-
-Production will be cut over from alpha to beta once beta is ready. Until then, keep alpha working and don't change it as part of beta work.
+- `apps/sanzo-wada-beta` is the Next.js + TypeScript app that production serves at https://sanzo-wada.dmbk.io, from the Vercel project `sanzo-wada`.
+- `apps/sanzo-wada-alpha` is the original React SPA it was ported from. Alpha is no longer deployed. It stays in the repo as the reference that `verify:colors` compares beta against, so don't change it as part of beta work.
 
 ## Commands
 
@@ -14,7 +12,6 @@ pnpm + Turborepo monorepo (`pnpm@8`, Node >= 20). The root `preinstall` enforces
 
 ```sh
 pnpm install
-pnpm build                                     # install + turbo build of alpha only, then copies apps/sanzo-wada-alpha/dist to ./dist (what Netlify publishes)
 pnpm dev:alpha                                 # webpack-dev-server with HMR (turbo, filtered to the app)
 pnpm build:alpha                               # webpack production build into apps/sanzo-wada-alpha/dist/
 pnpm dev:beta                                  # next dev for beta
@@ -25,11 +22,9 @@ pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 pa
 pnpm clean
 ```
 
-Every build script is filtered to one app. Don't add an unfiltered `turbo run build` to the Netlify path, because it would build beta too.
+Every build script is filtered to one app.
 
 There are no tests and no lint script. Beta's checks are the typecheck and the two `verify:*` scripts. `packages/sw-eslint-config` is scaffolding that nothing uses yet. Beta's `tsconfig.json` extends `packages/sw-tsconfig` (`@sw/tsconfig/base.json`). Formatting is Prettier (`.prettierrc`: no semicolons, single quotes, width 90, es5 trailing commas). The `lint-staged` config in the root `package.json` runs it on commit through husky.
-
-Netlify (`netlify.toml`) runs `npm run build` and publishes `dist/`, with a catch-all rewrite to `/index.html` for client-side routing.
 
 ## Architecture (`apps/sanzo-wada-alpha`)
 
@@ -56,7 +51,7 @@ The view on `/combination/:n` hardcodes `348` as the last combination for its pr
 
 ## Architecture (`apps/sanzo-wada-beta`)
 
-Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS. When changing styling, keep the two comparable until the cutover.
+Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS.
 
 **Static rendering.** Every page is pre-rendered at build time. `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
 
@@ -81,4 +76,4 @@ Beta's swatch JSON differs from alpha's in two ways:
 
 **Window size.** `src/state/WindowSize.tsx` holds a context with a 50ms throttle. The first render uses width 1240 (desktop), so the server and client HTML match on hydration. The real width is set after mount.
 
-**Deploy.** This is a separate Vercel project with its root directory set to `apps/sanzo-wada-beta`. Beta has no Netlify config.
+**Deploy.** The Vercel project `sanzo-wada` has its root directory set to `apps/sanzo-wada-beta` and serves the custom domain `sanzo-wada.dmbk.io`, whose DNS (a CNAME to Vercel) is managed in DigitalOcean. Pushes to `master` deploy production. To check a deploy, run `verify:routes https://sanzo-wada.dmbk.io`.

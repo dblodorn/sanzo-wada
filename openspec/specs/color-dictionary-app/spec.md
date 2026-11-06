@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The beta web app for Sanzo Wada's *A Dictionary of Color Combinations*. Every page is pre-rendered and should look and behave the same as alpha, so production can later be cut over from alpha without visitors noticing a difference.
+The beta web app for Sanzo Wada's *A Dictionary of Color Combinations*. Every page is pre-rendered and should look and behave the same as alpha, so production could be cut over from alpha without visitors noticing a difference. It now serves production at sanzo-wada.dmbk.io.
 
 ## Requirements
 
@@ -171,9 +171,9 @@ Every page SHALL have alpha's title "WADA SANZO | DICTIONARY OF COLOR COMBINATIO
 
 ### Requirement: Standalone Vercel deployment
 
-The app SHALL deploy as its own Vercel project, built from the monorepo with only the beta app's build. Building or deploying beta SHALL NOT build alpha or change alpha's Netlify deployment.
+The app SHALL deploy as the `sanzo-wada` Vercel project, which serves sanzo-wada.dmbk.io, built from the monorepo with only the beta app's build. Building or deploying it SHALL NOT build alpha, which is kept only as the reference for `verify:colors`.
 
 #### Scenario: Beta deploy leaves alpha alone
 
 - **WHEN** a commit triggers the beta Vercel build
-- **THEN** only `sanzo-wada-beta` is built, and alpha's Netlify site is unchanged
+- **THEN** only `sanzo-wada-beta` is built

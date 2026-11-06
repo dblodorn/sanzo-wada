@@ -1,7 +1,5 @@
 # Sanzo Wada - A Dictionary of Color Combinations
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/ded1f6b2-0d03-45a7-8dde-e2bedd8be3b9/deploy-status)](https://app.netlify.com/sites/keen-nightingale-3ee384/deploys)
-
 Due to the fact that it doesn't exist (to my knowledge) I thought it would be great to have an interactive version of this amazing book. Conversion of CMYK colors to RGB / HEX is difficult - so not all are faithful to the printed plates in the book. Therefore this can be used as a companion to the print edition.
 
 Major thanks to [@gka](https://github.com/gka) for authoring the amazing color manipulation library: [chroma.js](http://gka.github.io/chroma.js/)
