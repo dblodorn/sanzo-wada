@@ -1,0 +1,37 @@
+{
+  "name": "sanzo-wada-beta",
+  "version": "1.0.0",
+  "description": "sanzo wada dictionary of color combinations, next.js application",
+  "repository": "https://github.com/dblodorn/sanzo-wada",
+  "author": "Dain Blodorn Kim",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "verify:colors": "tsx scripts/verify-colors.ts",
+    "verify:routes": "tsx scripts/verify-routes.ts"
+  },
+  "dependencies": {
+    "chroma-js": "3.2.0",
+    "lodash": "^4.18.1",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-copy-to-clipboard": "^5.1.1",
+    "react-dom": "^19.3.1",
+    "styled-components": "^6.6.0"
+  },
+  "devDependencies": {
+    "@sw/tsconfig": "workspace:*",
+    "@types/chroma-js": "^3",
+    "@types/lodash": "^4.17.27",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-copy-to-clipboard": "^5.0.7",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3"
+  }
+}

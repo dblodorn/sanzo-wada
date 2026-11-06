@@ -2,7 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-An interactive web version of Sanzo Wada's *A Dictionary of Color Combinations* (348 combinations, 159 colors). Deployed to Netlify as a static SPA.
+An interactive web version of Sanzo Wada's *A Dictionary of Color Combinations* (348 combinations, 159 colors). There are two apps:
+- `apps/sanzo-wada-alpha` is the original React SPA. It is what production serves today, from Netlify.
+- `apps/sanzo-wada-beta` is a Next.js + TypeScript port with the same styling and behaviour, deployed to its own Vercel project.
+
+Production will be cut over from alpha to beta once beta is ready. Until then, keep alpha working and don't change it as part of beta work.
 
 ## Commands
 
@@ -10,13 +14,20 @@ pnpm + Turborepo monorepo (`pnpm@8`, Node >= 20). The root `preinstall` enforces
 
 ```sh
 pnpm install
-pnpm build                                     # install + turbo build, then copies apps/sanzo-wada-alpha/dist to ./dist (what Netlify publishes)
+pnpm build                                     # install + turbo build of alpha only, then copies apps/sanzo-wada-alpha/dist to ./dist (what Netlify publishes)
 pnpm dev:alpha                                 # webpack-dev-server with HMR (turbo, filtered to the app)
 pnpm build:alpha                               # webpack production build into apps/sanzo-wada-alpha/dist/
+pnpm dev:beta                                  # next dev for beta
+pnpm build:beta                                # next build for beta (all pages pre-rendered)
+pnpm --filter sanzo-wada-beta typecheck        # tsc --noEmit (strict)
+pnpm --filter sanzo-wada-beta verify:colors    # beta's color library vs alpha's runtime color lists
+pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs + 404 cases against a running beta (after build + `pnpm start`)
 pnpm clean
 ```
 
-There are no tests and no lint script. `packages/sw-eslint-config` and `packages/sw-tsconfig` are scaffolding that the app doesn't use yet. Formatting is Prettier (`.prettierrc`: no semicolons, single quotes, width 90, es5 trailing commas). The `lint-staged` config in the root `package.json` runs it on commit through husky.
+Every build script is filtered to one app. Don't add an unfiltered `turbo run build` to the Netlify path, because it would build beta too.
+
+There are no tests and no lint script. Beta's checks are the typecheck and the two `verify:*` scripts. `packages/sw-eslint-config` is scaffolding that nothing uses yet. Beta's `tsconfig.json` extends `packages/sw-tsconfig` (`@sw/tsconfig/base.json`). Formatting is Prettier (`.prettierrc`: no semicolons, single quotes, width 90, es5 trailing commas). The `lint-staged` config in the root `package.json` runs it on commit through husky.
 
 Netlify (`netlify.toml`) runs `npm run build` and publishes `dist/`, with a catch-all rewrite to `/index.html` for client-side routing.
 
@@ -42,3 +53,28 @@ The view on `/combination/:n` hardcodes `348` as the last combination for its pr
 **`assets/colors.json` is a static, separately maintained file.** The Landing page links to it as the public "JSON API". It holds precomputed hex and RGB values, and they don't necessarily match what the app computes at runtime. If you edit the swatch JSON, this file won't update on its own.
 
 **Styling.** The design tokens are in `src/styles/theme.json`: colors, spacing, `shared.nav_height` and `breakpoints`. Shared styled-components and mixins such as `flexRow` and `media.small` come from `src/styles/index.js`. Window size is kept in Redux (`resize_state`, throttled), and components read it for responsive labels. The custom fonts (`fff-regular`, `fff-italic`) load through webfontloader from `assets/fonts.css`, and `fonts_loaded` is set in the store once they're ready.
+
+## Architecture (`apps/sanzo-wada-beta`)
+
+Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS. When changing styling, keep the two comparable until the cutover.
+
+**Static rendering.** Every page is pre-rendered at build time. `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. Swatch slugs are decoded with `decodeURIComponent` before lookup, because five of them contain `|` or `'`.
+
+**Color library (`src/colors/`).**
+- `types.ts`: `RawColor`, `Color` (alpha's snake_case fields), `SwatchGroup`, `Combination`.
+- `parse.ts`: validates the JSON at load. CMYK must be four values from 0 to 100, so a bad edit fails the build.
+- `colors.ts`: the enrichment, with the same algorithm as alpha. chroma-js 3 gives output identical to alpha's 1.4.1.
+- `index.ts`: exports `swatchGroups` (index restarts per group), `allColors` (index 1–159), `getColorBySlug`, `getCombination` and `COMBINATION_COUNT`.
+
+Beta's `swatches_d.json` differs from alpha's in one place: Dull Violet Black's magenta is 100 there (alpha has 106). `verify:colors` allows only that difference.
+
+**Styling.**
+- `src/styles/index.ts` and `theme.json` are ported from alpha. Custom style props are transient (`$hex`, `$hexVal`), and chroma colors are interpolated with `.hex()`.
+- `src/lib/registry.tsx` collects styled-components CSS into the pre-rendered HTML, with `enableVendorPrefixes` to match v3's output.
+- `src/Document.tsx` holds the global CSS (`createGlobalStyle`) and the `Main` wrapper.
+- Fonts load from `/assets/fonts.css`, linked in `src/app/layout.tsx`.
+- `public/assets/` is a copy of alpha's `assets/`.
+
+**Window size.** `src/state/WindowSize.tsx` holds a context with a 50ms throttle. The first render uses width 1240 (desktop), so the server and client HTML match on hydration. The real width is set after mount.
+
+**Deploy.** This is a separate Vercel project with its root directory set to `apps/sanzo-wada-beta`. Beta has no Netlify config.
