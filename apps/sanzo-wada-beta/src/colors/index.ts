@@ -9,6 +9,7 @@ import { swatches_e } from './swatches_e.json'
 import { swatches_f } from './swatches_f.json'
 
 export type * from './types'
+export { legacySlugs } from './legacySlugs'
 
 export const COMBINATION_COUNT = 348
 
@@ -27,7 +28,17 @@ export const swatchGroups: SwatchGroup[] = swatchLists.map((e) => ({ swatches: c
 // Flat list: index runs 1–159 across all groups (alpha's swatchArrayAll)
 export const allColors: Color[] = colors(swatchLists.flat())
 
-const colorsBySlug = new Map(allColors.map((color) => [color.slug, color]))
+// Slugs are URLs, so a duplicate fails the build rather than hiding a color
+const colorsBySlug = new Map<string, Color>()
+for (const color of allColors) {
+  const existing = colorsBySlug.get(color.slug)
+  if (existing) {
+    throw new Error(
+      `Slug "${color.slug}" is used by both "${existing.name}" and "${color.name}"`
+    )
+  }
+  colorsBySlug.set(color.slug, color)
+}
 
 export const getColorBySlug = (slug: string): Color | undefined => colorsBySlug.get(slug)
 

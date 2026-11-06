@@ -7,10 +7,13 @@ import * as alpha from '../../sanzo-wada-alpha/src/colors/swatches.js'
 
 type AlphaColor = Record<string, unknown> & { combinations: number[]; hex: string; name: string; slug: string }
 
-// The one intended data difference (design.md, Decision 5)
+// Intended data differences: Dull Violet Black's corrected magenta, and the
+// seven punctuated slugs beta normalizes (openspec add-swatch-slugs)
 const ALLOWED: Record<string, readonly string[]> = {
   'dull-violet-black': ['cmyk', 'cmyk_array'],
+  ...Object.fromEntries(Object.values(beta.legacySlugs).map((slug) => [slug, ['slug']])),
 }
+const betaSlug = (slug: string) => beta.legacySlugs[slug] ?? slug
 
 const alphaGroups = alpha.swatchArray as { swatches: AlphaColor[] }[]
 const alphaAll = alpha.swatchArrayAll as AlphaColor[]
@@ -23,7 +26,8 @@ const compareColor = (where: string, a: AlphaColor, b: beta.Color) => {
     const av = a[key]
     const bv = (b as unknown as Record<string, unknown>)[key]
     if (isDeepStrictEqual(av, bv)) continue
-    if (ALLOWED[b.slug]?.includes(key)) {
+    const slugMapped = key !== 'slug' || betaSlug(a.slug) === b.slug
+    if (ALLOWED[b.slug]?.includes(key) && slugMapped) {
       allowedSeen.add(`${where} ${b.slug}.${key}: ${JSON.stringify(av)} → ${JSON.stringify(bv)}`)
       continue
     }
@@ -45,7 +49,7 @@ for (let n = 1; n <= beta.COMBINATION_COUNT; n++) {
   // alpha's comboData filter
   const expected = alphaAll
     .filter((e) => e.combinations.includes(n))
-    .map((e) => ({ hex: e.hex, name: e.name, slug: e.slug }))
+    .map((e) => ({ hex: e.hex, name: e.name, slug: betaSlug(e.slug) }))
   const actual = beta.getCombination(n)?.colors
   if (!isDeepStrictEqual(expected, actual)) errors.push(`combination ${n} differs`)
 }

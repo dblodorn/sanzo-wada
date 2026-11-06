@@ -5,6 +5,7 @@ export type RGB = readonly [r: number, g: number, b: number]
 // A color as it appears in swatches_{a..f}.json
 export interface RawColor {
   readonly name: string
+  readonly slug: string
   readonly cmyk: CMYK
   readonly combinations: readonly number[]
 }

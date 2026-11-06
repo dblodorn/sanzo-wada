@@ -21,7 +21,7 @@ pnpm dev:beta                                  # next dev for beta
 pnpm build:beta                                # next build for beta (all pages pre-rendered)
 pnpm --filter sanzo-wada-beta typecheck        # tsc --noEmit (strict)
 pnpm --filter sanzo-wada-beta verify:colors    # beta's color library vs alpha's runtime color lists
-pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs + 404 cases against a running beta (after build + `pnpm start`)
+pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs, legacy slug redirects, /assets/colors.json and 404 cases against a running beta (after build + `pnpm start`)
 pnpm clean
 ```
 
@@ -58,22 +58,26 @@ The view on `/combination/:n` hardcodes `348` as the last combination for its pr
 
 Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS. When changing styling, keep the two comparable until the cutover.
 
-**Static rendering.** Every page is pre-rendered at build time. `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. Swatch slugs are decoded with `decodeURIComponent` before lookup, because five of them contain `|` or `'`.
+**Static rendering.** Every page is pre-rendered at build time. `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
 
 **Color library (`src/colors/`).**
 - `types.ts`: `RawColor`, `Color` (alpha's snake_case fields), `SwatchGroup`, `Combination`.
-- `parse.ts`: validates the JSON at load. CMYK must be four values from 0 to 100, so a bad edit fails the build.
-- `colors.ts`: the enrichment, with the same algorithm as alpha. chroma-js 3 gives output identical to alpha's 1.4.1.
+- `parse.ts`: validates the JSON at load. Each color needs a `slug` of lowercase letters, digits and single hyphens, and CMYK must be four values from 0 to 100, so a bad edit fails the build. `index.ts` also fails the build on a duplicate slug.
+- `colors.ts`: the enrichment, with the same algorithm as alpha, except that the slug comes from the JSON rather than from the name. chroma-js 3 gives output identical to alpha's 1.4.1.
 - `index.ts`: exports `swatchGroups` (index restarts per group), `allColors` (index 1–159), `getColorBySlug`, `getCombination` and `COMBINATION_COUNT`.
 
-Beta's `swatches_d.json` differs from alpha's in one place: Dull Violet Black's magenta is 100 there (alpha has 106). `verify:colors` allows only that difference.
+Beta's swatch JSON differs from alpha's in two ways:
+- every color has a stored `slug`. Seven of them are normalized away from alpha's punctuated slugs (`eugenia-red-a`, not `eugenia-red-|-a`).
+- Dull Violet Black's magenta is 100 (alpha has 106).
+
+`verify:colors` allows only those differences. When adding a color, write its slug by hand: lowercase the name, drop apostrophes, and turn each other run of punctuation or spaces into one hyphen.
 
 **Styling.**
 - `src/styles/index.ts` and `theme.json` are ported from alpha. Custom style props are transient (`$hex`, `$hexVal`), and chroma colors are interpolated with `.hex()`.
 - `src/lib/registry.tsx` collects styled-components CSS into the pre-rendered HTML, with `enableVendorPrefixes` to match v3's output.
 - `src/Document.tsx` holds the global CSS (`createGlobalStyle`) and the `Main` wrapper.
 - Fonts load from `/assets/fonts.css`, linked in `src/app/layout.tsx`.
-- `public/assets/` is a copy of alpha's `assets/`.
+- `public/assets/` is a copy of alpha's `assets/`, except `colors.json`, which is generated (see Static rendering).
 
 **Window size.** `src/state/WindowSize.tsx` holds a context with a 50ms throttle. The first render uses width 1240 (desktop), so the server and client HTML match on hydration. The real width is set after mount.
 
