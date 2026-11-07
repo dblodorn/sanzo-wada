@@ -34,3 +34,16 @@ export interface Combination {
   readonly number: number
   readonly colors: readonly CombinationColor[]
 }
+
+export type GroupId = 'a' | 'b' | 'c' | 'd' | 'e' | 'f'
+
+export interface GroupSummary {
+  readonly id: GroupId
+  readonly count: number
+  readonly slugs: readonly string[]
+}
+
+export interface NearestColor {
+  readonly color: Color
+  readonly distance: number
+}
