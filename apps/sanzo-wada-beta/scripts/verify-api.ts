@@ -42,8 +42,13 @@ const expectJson = async <T extends z.ZodType>(
     fail(where, `content type ${res.headers.get('content-type')}`)
   if (res.headers.get('access-control-allow-origin') !== '*')
     fail(where, 'no CORS header')
+  // Vercel's CDN consumes s-maxage and passes on only max-age, so behind it a
+  // CDN-cached success shows as max-age=300 plus an x-vercel-cache header
   const cache = res.headers.get('cache-control') ?? ''
-  if (status === 200 ? !cache.includes('s-maxage') : !cache.startsWith('public'))
+  const cdnCached =
+    cache.includes('s-maxage') ||
+    (res.headers.has('x-vercel-cache') && cache === 'public, max-age=300')
+  if (status === 200 ? !cdnCached : !cache.startsWith('public'))
     fail(where, `cache-control "${cache}"`)
   const parsed = schema.safeParse(await res.json().catch(() => undefined))
   if (!parsed.success) {
