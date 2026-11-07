@@ -1,11 +1,11 @@
 'use client'
 
 import styled from 'styled-components'
-import chroma from 'chroma-js'
 import { SwatchHeader, CopyHex } from './../components'
 import type { Color } from './../colors'
 import { flexColumn, ComboLink, ComboHex, bigType, ComboTitle } from './../styles'
-import { spacing, colors } from './../styles/theme.json'
+import { textColorOn } from './../styles/textColor'
+import { spacing } from './../styles/theme.json'
 
 export default function Swatch(props: Color) {
   return (
@@ -22,7 +22,11 @@ export default function Swatch(props: Color) {
         </ComboHeader>
         <ComboList>
           {props.combinations.map((combo) => (
-            <ComboLink href={`/combination/${combo}`} key={`${props.slug}-${combo}`} $hex={props.hex}>
+            <ComboLink
+              href={`/combination/${combo}`}
+              key={`${props.slug}-${combo}`}
+              $hex={props.hex}
+            >
               {combo}
             </ComboLink>
           ))}
@@ -39,8 +43,7 @@ const SwatchSection = styled.section<{ $hex: string }>`
   flex: 1;
   padding: ${spacing.double_pad} 0 ${spacing.big_pad};
   * {
-    color: ${(props) =>
-      chroma.contrast(props.$hex, colors.grey) > 2 ? colors.grey : colors.black}!important;
+    color: ${(props) => textColorOn(props.$hex)}!important;
   }
 `
 

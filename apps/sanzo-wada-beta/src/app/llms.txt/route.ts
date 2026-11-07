@@ -28,6 +28,8 @@ Responses are JSON: \`{ "data": ... }\` for one resource, \`{ "data": [...], "co
 - [Index](${origin}/): all colors, as swatches or a list
 - [Color page](${origin}/swatch/hermosa-pink): /swatch/{slug}
 - [Combination page](${origin}/combination/1): /combination/{n}, n from 1 to ${COMBINATION_COUNT}
+- [Color share card](${origin}/swatch/hermosa-pink/card.png): /swatch/{slug}/card.png, a 1200 × 630 PNG (also each color's card_url)
+- [Combination share card](${origin}/combination/1/card.png): /combination/{n}/card.png, a 1200 × 630 PNG (also each combination's card_url)
 - [About](${origin}/about): Sanzo Wada and the book
 
 ## Optional

@@ -76,10 +76,12 @@ const checkRest = async () => {
   // The color list is the public JSON plus group and links
   const res = await fetch(`${base}/assets/colors.json`)
   const publicJson = (await res.json()) as { colors: Record<string, unknown>[] }
-  colors?.data.forEach(({ group: _group, url: _url, api_url: _api, ...color }, i) => {
-    if (!isDeepStrictEqual(color, publicJson.colors[i]))
-      fail('/api/v1/colors', `entry ${i} differs from /assets/colors.json`)
-  })
+  colors?.data.forEach(
+    ({ group: _group, url: _url, api_url: _api, card_url: _card, ...color }, i) => {
+      if (!isDeepStrictEqual(color, publicJson.colors[i]))
+        fail('/api/v1/colors', `entry ${i} differs from /assets/colors.json`)
+    }
+  )
 
   const search = await expectJson(
     '/api/v1/colors?q=hays%20russet',
@@ -203,17 +205,36 @@ const checkRest = async () => {
   return { colors: colors?.data ?? [], combinations: combinations?.data ?? [] }
 }
 
-// Every color's page and API links, and a sample of combinations'
+// Every color's page and API links, and a sample of combinations'. Card links
+// must name the right card; a sample of them must serve a PNG.
+type Linked = { url: string; api_url: string; card_url: string }
 const checkLinks = async (
-  colors: { url: string; api_url: string }[],
-  combinations: { number: number; url: string; api_url: string }[]
+  colors: (Linked & { slug: string })[],
+  combinations: (Linked & { number: number; colors: (Linked & { slug: string })[] })[]
 ) => {
+  const cardUrls = [
+    ...colors.map((color) => [color.card_url, `/swatch/${color.slug}/card.png`]),
+    ...combinations.flatMap((c) => [
+      [c.card_url, `/combination/${c.number}/card.png`],
+      ...c.colors.map((color) => [color.card_url, `/swatch/${color.slug}/card.png`]),
+    ]),
+  ]
+  for (const [actual, path] of cardUrls) {
+    checks++
+    if (actual !== base + path) fail(path, `card_url is ${actual}`)
+  }
+
+  const sampled = <T extends Linked>(items: T[]) => items.filter((_, i) => i % 25 === 0)
   const urls = [
     ...colors.flatMap((color) => [color.url, color.api_url]),
-    ...combinations.filter((c) => c.number % 25 === 1).flatMap((c) => [c.url, c.api_url]),
+    ...sampled(combinations).flatMap((c) => [c.url, c.api_url]),
   ]
-  for (let i = 0; i < urls.length; i += 20) {
-    const batch = urls.slice(i, i + 20)
+  const cards = [...sampled(colors), ...sampled(combinations)].map(
+    (item) => item.card_url
+  )
+  const all = [...urls, ...cards]
+  for (let i = 0; i < all.length; i += 20) {
+    const batch = all.slice(i, i + 20)
     const results = await Promise.all(
       batch.map((url) => fetch(url, { redirect: 'manual' }))
     )
@@ -221,9 +242,11 @@ const checkLinks = async (
       checks++
       if (!batch[j].startsWith(base)) fail(batch[j], `link does not use ${base}`)
       if (res.status !== 200) fail(batch[j], `link returns ${res.status}`)
+      if (cards.includes(batch[j]) && res.headers.get('content-type') !== 'image/png')
+        fail(batch[j], `card is ${res.headers.get('content-type')}`)
     })
   }
-  return urls.length
+  return all.length
 }
 
 const checkDocs = async () => {
@@ -251,7 +274,12 @@ const checkDocs = async () => {
   const text = await res.text()
   if (!res.headers.get('content-type')?.startsWith('text/plain'))
     fail('/llms.txt', 'not text/plain')
-  for (const url of [`${base}/api/v1/openapi.json`, `${base}/api/mcp`])
+  for (const url of [
+    `${base}/api/v1/openapi.json`,
+    `${base}/api/mcp`,
+    `${base}/swatch/hermosa-pink/card.png`,
+    `${base}/combination/1/card.png`,
+  ])
     if (!text.includes(url)) fail('/llms.txt', `missing ${url}`)
 }
 

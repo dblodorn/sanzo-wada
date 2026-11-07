@@ -1,4 +1,5 @@
 import { getCombination, groupOf, groups } from '@/colors'
+import { combinationCardPath, swatchCardPath } from '@/cards/card'
 import type {
   Color,
   Combination,
@@ -20,6 +21,7 @@ import type {
 const colorLinks = (slug: string, origin: string) => ({
   url: `${origin}/swatch/${slug}`,
   api_url: `${origin}/api/v1/colors/${slug}`,
+  card_url: `${origin}${swatchCardPath(slug)}`,
 })
 
 const groupFor = (slug: string) => {
@@ -53,6 +55,7 @@ export const toCombinationResource = (
   colors: combination.colors.map((color) => toCombinationColor(color, origin)),
   url: `${origin}/combination/${combination.number}`,
   api_url: `${origin}/api/v1/combinations/${combination.number}`,
+  card_url: `${origin}${combinationCardPath(combination.number)}`,
 })
 
 export const toColorDetail = (color: Color, origin: string): ColorDetailResource => ({
