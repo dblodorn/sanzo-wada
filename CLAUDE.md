@@ -18,8 +18,8 @@ pnpm dev:beta                                  # next dev for beta
 pnpm build:beta                                # next build for beta (all pages pre-rendered)
 pnpm --filter sanzo-wada-beta typecheck        # tsc --noEmit (strict)
 pnpm --filter sanzo-wada-beta verify:colors    # beta's color library vs alpha's runtime color lists
-pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs, legacy slug redirects, /assets/colors.json, all 507 share cards (size, swatch background) with each page's og:image, and 404 cases against a running beta (after build + `pnpm start`)
-pnpm --filter sanzo-wada-beta verify:api http://localhost:3000     # every REST endpoint and error case, links (including card_url), OpenAPI validity, /llms.txt, and an MCP session whose tool results must equal the REST responses
+pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs plus /api, legacy slug redirects, /assets/colors.json, all 507 share cards (size, swatch background) with each page's og:image, and 404 cases against a running beta (after build + `pnpm start`)
+pnpm --filter sanzo-wada-beta verify:api http://localhost:3000     # every REST endpoint and error case, links (including card_url), OpenAPI validity, /llms.txt, an MCP session whose tool results must equal the REST responses, and the /api docs page (every endpoint and tool, with working examples)
 pnpm clean
 ```
 
@@ -54,7 +54,7 @@ The view on `/combination/:n` hardcodes `348` as the last combination for its pr
 
 Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS.
 
-**Static rendering.** Every page and share card is pre-rendered at build time. Only the API, MCP and `/llms.txt` routes run per request (see below). `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
+**Static rendering.** Every page and share card is pre-rendered at build time. Only the API, MCP and `/llms.txt` routes run per request; the `/api` docs page is static (see below). `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
 
 **Color library (`src/colors/`).**
 - `types.ts`: `RawColor`, `Color` (alpha's snake_case fields), `SwatchGroup`, `Combination`.
@@ -82,16 +82,18 @@ Beta's swatch JSON differs from alpha's in two ways:
 - `fonts.ts` loads the `fff` woff from `public/` at build time (Satori can't read woff2).
 - `card.ts` has the size, card paths, alt text and share titles/descriptions that pages, metadata and the API all use.
 - The swatch and combination pages export `generateMetadata` with `openGraph` and `twitter` (`summary_large_image`) only. `<title>` and the description stay alpha's.
-- `src/app/layout.tsx` sets `metadataBase` from `VERCEL_PROJECT_PRODUCTION_URL` in production, the preview URL on previews, and localhost otherwise. A local build's `og:image` therefore points at `http://localhost:3000`, so run `verify:routes` on port 3000.
+- `src/app/layout.tsx` sets `metadataBase` from `siteOrigin()` (`src/lib/origin.ts`): `VERCEL_PROJECT_PRODUCTION_URL` in production, the preview URL on previews, and localhost otherwise. A local build's `og:image` therefore points at `http://localhost:3000`, so run `verify:routes` on port 3000.
 - `next.config.ts` gives the cards `public, max-age=31536000, immutable`. After a card redesign, bust caches by adding a version query (for example `?v=2`) in `swatchCardPath`/`combinationCardPath` in `src/cards/card.ts`; metadata, `card_url` and `verify:routes` follow. A header set on the `ImageResponse` itself is replaced by Next.
 
 **REST API and MCP server.** Both are read-only and have no auth and no state.
 - `src/api/schemas.ts`: zod 4 schemas, the single source of the resource shapes. The TypeScript types, query parsing, the OpenAPI components and the MCP tool schemas all come from them.
 - `src/api/resources.ts`: turns library data into API resources (adds `group`, `url`, `api_url` and `card_url`, built from the request origin). REST handlers and MCP tools must both go through it, so their results stay identical, and `verify:api` checks that.
 - `src/api/http.ts`: response helpers. Successful responses are CDN-cached with a long `s-maxage`, since each deploy starts a fresh cache. Every route re-exports its `POST`/`PUT`/`PATCH`/`DELETE` (JSON 405) and `OPTIONS` (204). CORS headers for `/api/*` are set in `next.config.ts`.
-- `src/api/endpoints.ts`: the endpoint table that both `src/api/openapi.ts` (served at `/api/v1/openapi.json`) and `src/app/llms.txt/route.ts` render from. A new endpoint needs a route under `src/app/api/v1/`, an entry here and scenarios in `verify:api`.
+- `src/api/endpoints.ts`: the endpoint table that `src/api/openapi.ts` (served at `/api/v1/openapi.json`), `src/app/llms.txt/route.ts` and the `/api` docs page all render from. A new endpoint needs a route under `src/app/api/v1/`, an entry here and scenarios in `verify:api`.
 - `src/app/api/v1/[...rest]/route.ts`: returns the JSON 404 for unknown API paths.
-- `src/mcp/server.ts`: builds the MCP server (5 tools, 2 resource templates) per request. Results carry `structuredContent` equal to the REST `data`, plus a text summary.
+- `src/mcp/tools.ts`: the tools' names, titles, descriptions and input schemas, and the resource templates, shared by the server and the docs page.
+- `src/mcp/server.ts`: builds the MCP server (5 tools, 2 resource templates) per request from `tools.ts`, adding handlers and output schemas. Results carry `structuredContent` equal to the REST `data`, plus a text summary.
+- `/api` (`src/app/api/page.tsx`, view `src/views/Api.tsx`) is the human-readable docs page for both, pre-rendered. `src/api/docs.ts` builds its content from `endpoints.ts`, the OpenAPI component schemas and `tools.ts`, so it can't drift; `verify:api` compares it with the OpenAPI document and `tools/list`. The MCP URL in its connection snippets is absolute, from `siteOrigin()`, so a local build shows `http://localhost:3000`. The OpenAPI document links to it (`externalDocs`), as does `/llms.txt`.
 - `src/app/api/mcp/route.ts`: serves the MCP server with `createMcpHandler` from `@modelcontextprotocol/server` (pinned to 2.4.0). It handles both the 2026-07-28 protocol and 2025-era clients. 2025-era replies come back as a single SSE frame.
 
 **Window size.** `src/state/WindowSize.tsx` holds a context with a 50ms throttle. The first render uses width 1240 (desktop), so the server and client HTML match on hydration. The real width is set after mount.

@@ -2,20 +2,10 @@ import type { Metadata, Viewport } from 'next'
 import Document, { GlobalStyle } from '@/Document'
 import StyledComponentsRegistry from '@/lib/registry'
 import { WindowSizeProvider } from '@/state/WindowSize'
-
-// Absolute URLs in share metadata use the deployment's own origin. This mirrors
-// Next's fallback, made explicit: production domain, then preview, then local.
-const siteOrigin = () => {
-  const { VERCEL_ENV, VERCEL_PROJECT_PRODUCTION_URL, VERCEL_BRANCH_URL, VERCEL_URL } =
-    process.env
-  if (VERCEL_ENV === 'production' && VERCEL_PROJECT_PRODUCTION_URL)
-    return `https://${VERCEL_PROJECT_PRODUCTION_URL}`
-  const preview = VERCEL_BRANCH_URL ?? VERCEL_URL
-  if (preview) return `https://${preview}`
-  return `http://localhost:${process.env.PORT ?? 3000}`
-}
+import { siteOrigin } from '@/lib/origin'
 
 export const metadata: Metadata = {
+  // Absolute URLs in share metadata use the deployment's own origin
   metadataBase: new URL(siteOrigin()),
   title: 'WADA SANZO | DICTIONARY OF COLOR COMBINATIONS',
   description: "Wada Sanzo's Dictionary of Color Combinations. Published by Seigensha.",

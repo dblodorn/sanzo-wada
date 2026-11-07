@@ -12,6 +12,10 @@ export function GET(request: Request) {
 
 ${API_DESCRIPTION}
 
+## Documentation
+
+- [API documentation](${origin}/api): the REST API and the MCP server, written for people
+
 ## MCP server
 
 - [MCP server](${origin}/api/mcp): Streamable HTTP, no authentication. Tools: search_colors, get_color, get_combination, find_combinations, nearest_colors. Resources: sanzo://colors/{slug} and sanzo://combinations/{n}.

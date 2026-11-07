@@ -4,7 +4,6 @@ import {
   ResourceTemplate,
 } from '@modelcontextprotocol/server'
 import type { CallToolResult } from '@modelcontextprotocol/server'
-import { z } from 'zod'
 import {
   COMBINATION_COUNT,
   allColors,
@@ -28,7 +27,6 @@ import {
   colorDetailSchema,
   colorSchema,
   combinationSchema,
-  groupIdSchema,
   list,
   nearestColorSchema,
   single,
@@ -40,6 +38,7 @@ import type {
   NearestColorResource,
 } from '@/api/schemas'
 import { suggestSlugs } from './suggest'
+import { NUMBER_MESSAGE, resourceTemplates, toolDefinitions } from './tools'
 
 const INSTRUCTIONS = `Data from Sanzo Wada's A Dictionary of Color Combinations (1933): ${allColors.length} colors and ${COMBINATION_COUNT} combinations of two to four colors. Colors are identified by slug (for example hermosa-pink) and combinations by number (1 to ${COMBINATION_COUNT}). Use search_colors or nearest_colors to find colors, get_color for a color's combinations, and find_combinations for palettes that include given colors. Every result links to its page on the website, which you can cite.`
 
@@ -76,9 +75,6 @@ const unknownSlugError = (slug: string) => {
 const findColor = (slug: string): Color | undefined =>
   getColorBySlug(legacySlugs[slug] ?? slug)
 
-const NUMBER_MESSAGE = `must be from 1 to ${COMBINATION_COUNT}`
-const LIMIT_MESSAGE = 'must be from 1 to 20'
-
 // One server per request: the factory receives the request origin for links
 export const createServer = (origin: string): McpServer => {
   const server = new McpServer(
@@ -89,23 +85,7 @@ export const createServer = (origin: string): McpServer => {
   server.registerTool(
     'search_colors',
     {
-      title: 'Search colors',
-      description:
-        'List colors from the book, optionally filtered by name text (case and punctuation are ignored) and by swatch group a–f. With no arguments, returns all 159 colors in book order.',
-      inputSchema: z.object({
-        query: z
-          .string()
-          .max(100)
-          .optional()
-          .describe('Text the color name must contain'),
-        group: groupIdSchema.optional(),
-        limit: z
-          .int()
-          .min(1)
-          .max(159)
-          .optional()
-          .describe('Return at most this many colors'),
-      }),
+      ...toolDefinitions.search_colors,
       outputSchema: list(colorSchema),
       annotations: READ_ONLY,
     },
@@ -123,12 +103,7 @@ export const createServer = (origin: string): McpServer => {
   server.registerTool(
     'get_color',
     {
-      title: 'Get a color',
-      description:
-        "Get one color by slug: its CMYK, RGB and hex values and every combination it appears in, with those combinations' colors.",
-      inputSchema: z.object({
-        slug: z.string().min(1).describe('Color slug, for example hermosa-pink'),
-      }),
+      ...toolDefinitions.get_color,
       outputSchema: single(colorDetailSchema),
       annotations: READ_ONLY,
     },
@@ -150,15 +125,7 @@ export const createServer = (origin: string): McpServer => {
   server.registerTool(
     'get_combination',
     {
-      title: 'Get a combination',
-      description: `Get combination number 1 to ${COMBINATION_COUNT}: its two to four colors in the order the book lists them.`,
-      inputSchema: z.object({
-        number: z
-          .int({ error: NUMBER_MESSAGE })
-          .min(1, { error: NUMBER_MESSAGE })
-          .max(COMBINATION_COUNT, { error: NUMBER_MESSAGE })
-          .describe('Combination number'),
-      }),
+      ...toolDefinitions.get_combination,
       outputSchema: single(combinationSchema),
       annotations: READ_ONLY,
     },
@@ -173,17 +140,7 @@ export const createServer = (origin: string): McpServer => {
   server.registerTool(
     'find_combinations',
     {
-      title: 'Find combinations containing colors',
-      description:
-        'Find every combination that contains all of the given colors, optionally only those of a given size. Use it to find palettes built around a color.',
-      inputSchema: z.object({
-        colors: z
-          .array(z.string().min(1))
-          .min(1)
-          .max(4)
-          .describe('One to four color slugs that must all be in the combination'),
-        size: z.int().min(2).max(4).optional().describe('Number of colors, 2 to 4'),
-      }),
+      ...toolDefinitions.find_combinations,
       outputSchema: list(combinationSchema),
       annotations: READ_ONLY,
     },
@@ -204,18 +161,7 @@ export const createServer = (origin: string): McpServer => {
   server.registerTool(
     'nearest_colors',
     {
-      title: 'Nearest colors to a hex value',
-      description:
-        'Match any color to the book: ranks all colors by CIEDE2000 color difference from the given hex value, nearest first. A distance of 0 is identical; under about 5 is close.',
-      inputSchema: z.object({
-        hex: z.string().describe('Hex color as #rgb, rgb, #rrggbb or rrggbb'),
-        limit: z
-          .int({ error: LIMIT_MESSAGE })
-          .min(1, { error: LIMIT_MESSAGE })
-          .max(20, { error: LIMIT_MESSAGE })
-          .default(5)
-          .describe('How many colors to return'),
-      }),
+      ...toolDefinitions.nearest_colors,
       outputSchema: list(nearestColorSchema),
       annotations: READ_ONLY,
     },
@@ -240,7 +186,7 @@ export const createServer = (origin: string): McpServer => {
 
   server.registerResource(
     'color',
-    new ResourceTemplate('sanzo://colors/{slug}', {
+    new ResourceTemplate(resourceTemplates.color.uriTemplate, {
       list: () => ({
         resources: allColors.map((color) => ({
           uri: `sanzo://colors/${color.slug}`,
@@ -250,9 +196,9 @@ export const createServer = (origin: string): McpServer => {
       }),
     }),
     {
-      title: 'Color',
-      description: 'A color with its values and combinations',
-      mimeType: 'application/json',
+      title: resourceTemplates.color.title,
+      description: resourceTemplates.color.description,
+      mimeType: resourceTemplates.color.mimeType,
     },
     (uri, { slug }) => {
       const color = findColor(variable(slug))
@@ -263,7 +209,7 @@ export const createServer = (origin: string): McpServer => {
 
   server.registerResource(
     'combination',
-    new ResourceTemplate('sanzo://combinations/{n}', {
+    new ResourceTemplate(resourceTemplates.combination.uriTemplate, {
       list: () => ({
         resources: combinationNumbers().map((n) => ({
           uri: `sanzo://combinations/${n}`,
@@ -273,9 +219,9 @@ export const createServer = (origin: string): McpServer => {
       }),
     }),
     {
-      title: 'Combination',
-      description: 'A combination with its colors',
-      mimeType: 'application/json',
+      title: resourceTemplates.combination.title,
+      description: resourceTemplates.combination.description,
+      mimeType: resourceTemplates.combination.mimeType,
     },
     (uri, { n }) => {
       const value = variable(n)

@@ -1,4 +1,5 @@
-// Checks the REST API, /llms.txt and the MCP server against the specs.
+// Checks the REST API, /llms.txt, the MCP server and the /api docs page against
+// the specs.
 // Run against a server: pnpm --filter sanzo-wada-beta verify:api [base-url]
 // (defaults to http://localhost:3000, e.g. after `pnpm build && pnpm start`)
 import { isDeepStrictEqual } from 'node:util'
@@ -279,8 +280,107 @@ const checkDocs = async () => {
     `${base}/api/mcp`,
     `${base}/swatch/hermosa-pink/card.png`,
     `${base}/combination/1/card.png`,
+    `(${base}/api)`,
   ])
     if (!text.includes(url)) fail('/llms.txt', `missing ${url}`)
+
+  checks++
+  if (document.externalDocs?.url !== `${base}/api`)
+    fail('/api/v1/openapi.json', `externalDocs.url is ${document.externalDocs?.url}`)
+}
+
+// The /api page: its text, and each section by id
+const ENTITIES: Record<string, string> = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#x27;': "'",
+}
+const pageText = (html: string) =>
+  html
+    .replace(/<!-- -->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&(amp|lt|gt|quot|#x27);/g, (entity) => ENTITIES[entity])
+const sections = (html: string) =>
+  new Map(
+    [...html.matchAll(/<article\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)].map(
+      ([, id, body]) => [id, body]
+    )
+  )
+const attributes = (html: string, name: string) =>
+  [...html.matchAll(new RegExp(`\\b${name}="([^"]+)"`, 'g'))].map(([, value]) => value)
+
+// Every endpoint in the OpenAPI document and every MCP tool is on the page, with
+// its parameters, and nothing else is; examples and links work
+const checkDocsPage = async () => {
+  checks++
+  const res = await request('/api')
+  if (res.status !== 200 || !res.headers.get('content-type')?.startsWith('text/html')) {
+    fail('/api', `status ${res.status}, ${res.headers.get('content-type')}`)
+    return
+  }
+  const html = await res.text()
+  const byId = sections(html)
+  const document = await (await request('/api/v1/openapi.json')).json()
+
+  type Operation = { operationId: string; parameters?: { name: string }[] }
+  const operations = Object.entries(
+    document.paths as Record<string, { get: Operation }>
+  ).map(([path, item]) => ({ path, ...item.get }))
+  for (const { path, operationId, parameters = [] } of operations) {
+    checks++
+    const section = byId.get(operationId)
+    if (!section) {
+      fail('/api', `no section for ${operationId} (${path})`)
+      continue
+    }
+    if (!pageText(section).includes(`GET ${path}`))
+      fail('/api', `${operationId}: no GET ${path}`)
+    const examples = attributes(section, 'href').filter((href) =>
+      href.startsWith('/api/v1/')
+    )
+    if (examples.length !== 1)
+      fail('/api', `${operationId}: ${examples.length} example links`)
+    for (const example of examples) await expectJson(pageText(example), 200, z.unknown())
+    for (const { name } of parameters)
+      if (!section.includes(`<code>${name}</code>`))
+        fail('/api', `${operationId}: parameter ${name} missing`)
+  }
+  const documented = new Set(operations.map(({ path }) => path))
+  for (const path of attributes(html, 'data-endpoint'))
+    if (!documented.has(path)) fail('/api', `documents ${path}, which OpenAPI lacks`)
+
+  const listed = (await rpc('tools/list')).result?.tools as
+    | { name: string; description: string; inputSchema: { properties?: object } }[]
+    | undefined
+  for (const tool of listed ?? []) {
+    checks++
+    const section = byId.get(`tool-${tool.name}`)
+    if (!section) {
+      fail('/api', `no section for tool ${tool.name}`)
+      continue
+    }
+    if (!pageText(section).includes(tool.description))
+      fail('/api', `tool ${tool.name}: description differs`)
+    for (const name of Object.keys(tool.inputSchema.properties ?? {}))
+      if (!section.includes(`<code>${name}</code>`))
+        fail('/api', `tool ${tool.name}: input ${name} missing`)
+  }
+  const tools = new Set((listed ?? []).map(({ name }) => name))
+  for (const name of attributes(html, 'data-tool'))
+    if (!tools.has(name)) fail('/api', `documents tool ${name}, which the server lacks`)
+
+  checks++
+  if (!pageText(html).includes(`${base}/api/mcp`))
+    fail('/api', `connection snippet lacks ${base}/api/mcp`)
+
+  const hrefs = new Set(attributes(html, 'href').map((href) => pageText(href)))
+  for (const link of ['/api/v1/openapi.json', '/llms.txt', '/assets/colors.json', '/']) {
+    checks++
+    if (!hrefs.has(link)) fail('/api', `no link to ${link}`)
+    else if ((await request(link)).status !== 200) fail('/api', `${link} is not 200`)
+  }
 }
 
 // A minimal MCP client over raw fetch: JSON-RPC in, JSON or SSE out
@@ -459,6 +559,7 @@ const main = async () => {
   const links = await checkLinks(colors, combinations)
   await checkDocs()
   await checkMcp()
+  await checkDocsPage()
 
   if (failures.length) {
     console.error(failures.join('\n'))
@@ -466,7 +567,7 @@ const main = async () => {
     process.exit(1)
   }
   console.log(
-    `OK: ${checks} checks: REST endpoints and errors, ${links} links, OpenAPI, /llms.txt, MCP tools and resources match REST (${base})`
+    `OK: ${checks} checks: REST endpoints and errors, ${links} links, OpenAPI, /llms.txt, MCP tools and resources match REST, /api documents both (${base})`
   )
 }
 
