@@ -8,7 +8,7 @@ export const API_DESCRIPTION =
 const ref = (id: string) => ({ $ref: `#/components/schemas/${id}` })
 
 // zod emits standalone documents; components need neither $schema nor $id
-const componentSchemas = (): Record<string, unknown> => {
+export const componentSchemas = (): Record<string, unknown> => {
   const { schemas } = z.toJSONSchema(apiRegistry, {
     target: 'draft-2020-12',
     uri: (id) => `#/components/schemas/${id}`,
@@ -34,6 +34,10 @@ export const openApiDocument = (origin: string) => ({
     description: `${API_DESCRIPTION} An MCP server with the same data is at ${origin}/api/mcp.`,
   },
   servers: [{ url: origin }],
+  externalDocs: {
+    description: 'Documentation for the REST API and the MCP server',
+    url: `${origin}/api`,
+  },
   paths: Object.fromEntries(
     endpoints.map((endpoint) => {
       const item = ref(endpoint.item)

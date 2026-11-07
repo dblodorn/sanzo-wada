@@ -1,5 +1,5 @@
-// Requests every page URL, the legacy slug redirects, the JSON API, every share
-// card with each page's share metadata, and the 404 cases.
+// Requests every page URL, the API docs page, the legacy slug redirects, the JSON
+// API, every share card with each page's share metadata, and the 404 cases.
 // Run against a server: pnpm --filter sanzo-wada-beta verify:routes [base-url]
 // (defaults to http://localhost:3000, e.g. after `pnpm build && pnpm start`)
 import { isDeepStrictEqual } from 'node:util'
@@ -12,6 +12,7 @@ const base = (process.argv[2] ?? 'http://localhost:3000').replace(/\/$/, '')
 const ok = [
   '/',
   '/about',
+  '/api',
   ...colorSlugs().map((slug) => `/swatch/${slug}`),
   ...combinationNumbers().map((n) => `/combination/${n}`),
 ]
@@ -142,8 +143,18 @@ const checkShareCards = async () => {
   }
 }
 
+// The API documentation page is HTML with the site's title
+const checkApiPage = async () => {
+  const res = await request('/api')
+  if (!res.headers.get('content-type')?.startsWith('text/html'))
+    failures.push(`/api: content type ${res.headers.get('content-type')}`)
+  const html = await res.text()
+  if (!html.includes(`<title>${TITLE}</title>`)) failures.push('/api: wrong <title>')
+}
+
 const main = async () => {
   await check(ok, 200)
+  await checkApiPage()
   await check(notFound, 404)
   await checkRedirects()
   await checkJson()
@@ -154,7 +165,7 @@ const main = async () => {
     process.exit(1)
   }
   console.log(
-    `OK: ${ok.length} page URLs return 200, ${redirects.length} legacy URLs redirect, /assets/colors.json has ${allColors.length} colors, ${shared.length} share cards are ${CARD_SIZE.width}×${CARD_SIZE.height} PNGs that their pages point to, ${notFound.length} unknown URLs return 404 (${base})`
+    `OK: ${ok.length} page URLs (including /api) return 200, ${redirects.length} legacy URLs redirect, /assets/colors.json has ${allColors.length} colors, ${shared.length} share cards are ${CARD_SIZE.width}×${CARD_SIZE.height} PNGs that their pages point to, ${notFound.length} unknown URLs return 404 (${base})`
   )
 }
 
