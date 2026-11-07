@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import { CARD_CACHE } from './src/cards/card'
 import { legacySlugs } from './src/colors/legacySlugs'
 
 const nextConfig: NextConfig = {
@@ -15,12 +16,21 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Allow-Methods', value: 'GET, HEAD, POST, OPTIONS' },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Accept, Mcp-Session-Id, Mcp-Protocol-Version, Last-Event-ID',
+            value:
+              'Content-Type, Accept, Mcp-Session-Id, Mcp-Protocol-Version, Last-Event-ID',
           },
-          { key: 'Access-Control-Expose-Headers', value: 'Mcp-Session-Id, Mcp-Protocol-Version' },
+          {
+            key: 'Access-Control-Expose-Headers',
+            value: 'Mcp-Session-Id, Mcp-Protocol-Version',
+          },
           { key: 'Access-Control-Max-Age', value: '86400' },
         ],
       },
+      // Share cards are static files; let unfurlers cache them for an hour
+      ...['/swatch/:slug/card.png', '/combination/:n/card.png'].map((source) => ({
+        source,
+        headers: [{ key: 'Cache-Control', value: CARD_CACHE }],
+      })),
     ]
   },
   // Alpha's punctuated swatch URLs move permanently to the normalized slugs.

@@ -19,6 +19,9 @@ const hexSchema = z
 const links = {
   url: z.url().describe("Absolute URL of the resource's page on the website"),
   api_url: z.url().describe('Absolute URL of this resource in the REST API'),
+  card_url: z
+    .url()
+    .describe('Absolute URL of the share card, a 1200 × 630 PNG of the colors'),
 }
 
 const unit = z.number().min(0).max(100)
