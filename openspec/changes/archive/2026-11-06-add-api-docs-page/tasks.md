@@ -34,4 +34,4 @@
 
 - [x] 5.1 Update `CLAUDE.md` with the `/api` page, `src/mcp/tools.ts`, `src/lib/origin.ts`, and the new verify coverage. Verify by reading it back.
 - [x] 5.2 Full local pass: `typecheck`, `verify:colors`, `verify:routes` and `verify:api` against `next start` on port 3000. All must pass.
-- [ ] 5.3 After deploy, run `verify:routes` and `verify:api` against `https://sanzo-wada.dmbk.io`. Verify that both pass and that the page's snippet shows the production MCP URL.
+- [x] 5.3 After deploy, run `verify:routes` and `verify:api` against `https://sanzo-wada.dmbk.io`. Verify that both pass and that the page's snippet shows the production MCP URL.
