@@ -78,4 +78,4 @@
 ## 6. Docs and release
 
 - [x] 6.1 Update `CLAUDE.md` (the beta architecture section): describe the card routes, `src/cards/`, `metadataBase` and `card_url`. Update the `verify:routes` and `verify:api` command descriptions. Verify that the text matches the code.
-- [ ] 6.2 Open a PR. After it is merged and deployed, run `verify:routes` and `verify:api` against `https://sanzo-wada.dmbk.io` and check that both pass. Also check that a swatch URL and a combination URL unfurl with their cards in a link-preview validator.
+- [x] 6.2 Open a PR. After it is merged and deployed, run `verify:routes` and `verify:api` against `https://sanzo-wada.dmbk.io` and check that both pass. Also check that a swatch URL and a combination URL unfurl with their cards in a link-preview validator.
