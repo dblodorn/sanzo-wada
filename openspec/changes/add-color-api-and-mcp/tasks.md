@@ -55,4 +55,4 @@
 ## 8. Documentation and release
 
 - [x] 8.1 Update `CLAUDE.md`'s beta architecture section with the `src/api` and `src/mcp` layout, the REST and MCP routes, the caching model, `verify:api` in the commands list, and the rule that REST and MCP share serializers. Verify by review in the PR diff.
-- [ ] 8.2 Commit, open a PR, and after merge run `verify:api https://sanzo-wada.dmbk.io` against production. Verify that it passes and the Vercel production deploy succeeded.
+- [x] 8.2 Commit, open a PR, and after merge run `verify:api https://sanzo-wada.dmbk.io` against production. Verify that it passes and the Vercel production deploy succeeded.
