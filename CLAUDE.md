@@ -18,7 +18,7 @@ pnpm dev:beta                                  # next dev for beta
 pnpm build:beta                                # next build for beta (all pages pre-rendered)
 pnpm --filter sanzo-wada-beta typecheck        # tsc --noEmit (strict)
 pnpm --filter sanzo-wada-beta verify:colors    # beta's color library vs alpha's runtime color lists
-pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs plus /api, legacy slug redirects, /assets/colors.json, all 507 share cards (size, swatch background) with each page's og:image, and 404 cases against a running beta (after build + `pnpm start`)
+pnpm --filter sanzo-wada-beta verify:routes http://localhost:3000   # all 509 page URLs plus /api, legacy slug redirects, /assets/colors.json, all 507 share cards (size, swatch background) with each page's og:image, all 507 favicons (bar colors and order) with each page's icon link, and 404 cases against a running beta (after build + `pnpm start`)
 pnpm --filter sanzo-wada-beta verify:api http://localhost:3000     # every REST endpoint and error case, links (including card_url), OpenAPI validity, /llms.txt, an MCP session whose tool results must equal the REST responses, and the /api docs page (every endpoint and tool, with working examples)
 pnpm clean
 ```
@@ -54,7 +54,7 @@ The view on `/combination/:n` hardcodes `348` as the last combination for its pr
 
 Next.js 16 App Router, React 19, styled-components 6, strict TypeScript. The port is deliberately one-to-one: each alpha component and view has a counterpart with the same name and the same styled-component CSS.
 
-**Static rendering.** Every page and share card is pre-rendered at build time. Only the API, MCP and `/llms.txt` routes run per request; the `/api` docs page is static (see below). `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
+**Static rendering.** Every page, share card and favicon is pre-rendered at build time. Only the API, MCP and `/llms.txt` routes run per request; the `/api` docs page is static (see below). `src/app/swatch/[slug]/page.tsx` and `src/app/combination/[n]/page.tsx` use `generateStaticParams` with `dynamicParams = false`, so an unknown slug or number is a real 404 (`src/app/not-found.tsx`). Pages are server components: they look up data in the color library and pass it as props to the `'use client'` views in `src/views/`. There is no Redux and no runtime data fetching. `next.config.ts` permanently redirects alpha's seven punctuated swatch URLs (for example `/swatch/hay's-russet`, typed or percent-encoded) to the normalized slugs listed in `src/colors/legacySlugs.ts`. `src/app/assets/colors.json/route.ts` generates the public JSON API from `allColors` at build time, as a static file.
 
 **Color library (`src/colors/`).**
 - `types.ts`: `RawColor`, `Color` (alpha's snake_case fields), `SwatchGroup`, `Combination`.
@@ -95,6 +95,13 @@ Beta's swatch JSON differs from alpha's in two ways:
 - `src/mcp/server.ts`: builds the MCP server (5 tools, 2 resource templates) per request from `tools.ts`, adding handlers and output schemas. Results carry `structuredContent` equal to the REST `data`, plus a text summary.
 - `/api` (`src/app/api/page.tsx`, view `src/views/Api.tsx`) is the human-readable docs page for both, pre-rendered. `src/api/docs.ts` builds its content from `endpoints.ts`, the OpenAPI component schemas and `tools.ts`, so it can't drift; `verify:api` compares it with the OpenAPI document and `tools/list`. The MCP URL in its connection snippets is absolute, from `siteOrigin()`, so a local build shows `http://localhost:3000`. The OpenAPI document links to it (`externalDocs`), as does `/llms.txt`.
 - `src/app/api/mcp/route.ts`: serves the MCP server with `createMcpHandler` from `@modelcontextprotocol/server` (pinned to 2.4.0). It handles both the 2026-07-28 protocol and 2025-era clients. 2025-era replies come back as a single SSE frame.
+
+**Favicons.** Each swatch and combination has a square SVG icon at `/swatch/<slug>/favicon.svg` and `/combination/<n>/favicon.svg`: equal-width vertical bars of its colors in library order (one bar for a swatch). Like the cards, these are static route handlers with `generateStaticParams`, `force-static` and `dynamicParams = false`, and they share the cards' cache header in `next.config.ts`.
+- They're named `favicon.svg` because Next treats any `icon.svg` path as a metadata file, not a route handler.
+- `src/icons/icon.ts` has the icon paths and `iconSvg(hexes)`. A client component imports it, so it must not import the color library.
+- `src/components/Favicon.tsx`, rendered once in `src/app/layout.tsx`, is the only `<link rel="icon">`; React hoists it into `<head>`. It reads `usePathname()`: a swatch or combination page links its own icon, and every other page (`/`, `/about`, `/api`, 404) links a random swatch's icon, picked after mount and again on each navigation. The pre-rendered HTML and the first client render use the first color (Hermosa Pink), so hydration matches. The layout passes the slugs and `COMBINATION_COUNT` as props.
+- No page sets `metadata.icons`, and there's no `app/icon.*` or `app/favicon.ico`. Adding either would create a second icon link.
+- The random pick and the swap on navigation need a browser; `verify:routes` only checks the icons and the pre-rendered links.
 
 **Window size.** `src/state/WindowSize.tsx` holds a context with a 50ms throttle. The first render uses width 1240 (desktop), so the server and client HTML match on hydration. The real width is set after mount.
 

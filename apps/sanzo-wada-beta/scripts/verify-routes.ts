@@ -1,11 +1,19 @@
 // Requests every page URL, the API docs page, the legacy slug redirects, the JSON
-// API, every share card with each page's share metadata, and the 404 cases.
+// API, every share card with each page's share metadata, every favicon with
+// each page's icon link, and the 404 cases.
 // Run against a server: pnpm --filter sanzo-wada-beta verify:routes [base-url]
 // (defaults to http://localhost:3000, e.g. after `pnpm build && pnpm start`)
 import { isDeepStrictEqual } from 'node:util'
 import { inflateSync } from 'node:zlib'
-import { allColors, colorSlugs, combinationNumbers, legacySlugs } from '../src/colors'
+import {
+  allColors,
+  colorSlugs,
+  combinationNumbers,
+  getCombination,
+  legacySlugs,
+} from '../src/colors'
 import { CARD_SIZE, combinationCardPath, swatchCardPath } from '../src/cards/card'
+import { combinationIconPath, swatchIconPath } from '../src/icons/icon'
 
 const base = (process.argv[2] ?? 'http://localhost:3000').replace(/\/$/, '')
 
@@ -25,21 +33,33 @@ const notFound = [
   "/swatch/hay's-russet/card.png",
   '/combination/0/card.png',
   '/combination/349/card.png',
+  '/swatch/not-a-color/favicon.svg',
+  "/swatch/hay's-russet/favicon.svg",
+  '/combination/0/favicon.svg',
+  '/combination/349/favicon.svg',
 ]
 
-// Each page with its share card, and for swatches the card's background
+// Each page with its share card and favicon, for swatches the card's
+// background, and the icon's colors from left to right
 const shared = [
   ...allColors.map((color) => ({
     page: `/swatch/${color.slug}`,
     card: swatchCardPath(color.slug),
     hex: color.hex as string | undefined,
+    icon: swatchIconPath(color.slug),
+    hexes: [color.hex as string],
   })),
   ...combinationNumbers().map((n) => ({
     page: `/combination/${n}`,
     card: combinationCardPath(n),
     hex: undefined,
+    icon: combinationIconPath(n),
+    hexes: getCombination(n)!.colors.map((color) => color.hex as string),
   })),
 ]
+// Pages that pick a random icon after load; their HTML links the first color's
+const randomIconPages = ['/', '/about', '/api']
+const FALLBACK_ICON = swatchIconPath(colorSlugs()[0])
 const TITLE = 'WADA SANZO | DICTIONARY OF COLOR COMBINATIONS'
 
 // Alpha's punctuated slugs, as typed and percent-encoded, each with its target
@@ -116,11 +136,59 @@ const readPng = (png: Buffer) => {
 const meta = (html: string, key: string) =>
   html.match(new RegExp(`<meta (?:property|name)="${key}" content="([^"]*)"`))?.[1]
 
+const iconLinks = (html: string) =>
+  [...html.matchAll(/<link rel="icon"[^>]*href="([^"]*)"/g)].map((m) => m[1])
+
+// A favicon's problems: equal full-height bars covering a square viewBox,
+// filled with the expected colors from left to right
+const iconProblems = (svg: string, hexes: string[]) => {
+  const size = Number(svg.match(/viewBox="0 0 (\d+) \1"/)?.[1])
+  if (!size) return 'no square viewBox'
+  const bars = [...svg.matchAll(/<rect ([^>]*)\/>/g)].map(([, attrs]) =>
+    Object.fromEntries([...attrs.matchAll(/(\w+)="([^"]*)"/g)].map(([, k, v]) => [k, v]))
+  )
+  const fills = bars.map((bar) => bar.fill)
+  if (!isDeepStrictEqual(fills, hexes))
+    return `fills ${fills.join(' ')}, expected ${hexes.join(' ')}`
+  const width = size / hexes.length
+  const covers = bars.every(
+    (bar, i) =>
+      Number(bar.x) === i * width &&
+      Number(bar.y) === 0 &&
+      Number(bar.width) === width &&
+      Number(bar.height) === size
+  )
+  return covers ? undefined : 'bars are not equal and do not cover the viewBox'
+}
+
+const checkIcons = async () => {
+  for (let i = 0; i < shared.length; i += 20) {
+    const batch = shared.slice(i, i + 20)
+    await Promise.all(
+      batch.map(async ({ icon, hexes }) => {
+        const res = await request(icon)
+        const type = res.headers.get('content-type')
+        if (res.status !== 200 || type !== 'image/svg+xml')
+          return failures.push(`${icon}: expected an SVG, got ${res.status} ${type}`)
+        const problem = iconProblems(await res.text(), hexes)
+        if (problem) failures.push(`${icon}: ${problem}`)
+      })
+    )
+  }
+  for (const page of randomIconPages) {
+    const links = iconLinks(await (await request(page)).text())
+    if (!isDeepStrictEqual(links, [FALLBACK_ICON]))
+      failures.push(
+        `${page}: icon links ${links.join(' ') || 'none'}, expected ${FALLBACK_ICON}`
+      )
+  }
+}
+
 const checkShareCards = async () => {
   for (let i = 0; i < shared.length; i += 20) {
     const batch = shared.slice(i, i + 20)
     await Promise.all(
-      batch.map(async ({ page, card, hex }) => {
+      batch.map(async ({ page, card, hex, icon }) => {
         const res = await request(card)
         const type = res.headers.get('content-type')
         if (res.status !== 200 || type !== 'image/png')
@@ -138,6 +206,11 @@ const checkShareCards = async () => {
           failures.push(`${page}: twitter:card is ${meta(html, 'twitter:card')}`)
         if (!html.includes(`<title>${TITLE}</title>`))
           failures.push(`${page}: title changed`)
+        const links = iconLinks(html)
+        if (!isDeepStrictEqual(links, [icon]))
+          failures.push(
+            `${page}: icon links ${links.join(' ') || 'none'}, expected ${icon}`
+          )
       })
     )
   }
@@ -159,13 +232,14 @@ const main = async () => {
   await checkRedirects()
   await checkJson()
   await checkShareCards()
+  await checkIcons()
 
   if (failures.length) {
     console.error(failures.join('\n'))
     process.exit(1)
   }
   console.log(
-    `OK: ${ok.length} page URLs (including /api) return 200, ${redirects.length} legacy URLs redirect, /assets/colors.json has ${allColors.length} colors, ${shared.length} share cards are ${CARD_SIZE.width}×${CARD_SIZE.height} PNGs that their pages point to, ${notFound.length} unknown URLs return 404 (${base})`
+    `OK: ${ok.length} page URLs (including /api) return 200, ${redirects.length} legacy URLs redirect, /assets/colors.json has ${allColors.length} colors, ${shared.length} share cards are ${CARD_SIZE.width}×${CARD_SIZE.height} PNGs that their pages point to, ${shared.length} favicons match their colors and pages, ${randomIconPages.length} other pages link the fallback icon, ${notFound.length} unknown URLs return 404 (${base})`
   )
 }
 

@@ -26,8 +26,13 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Max-Age', value: '86400' },
         ],
       },
-      // Share cards are static files; let unfurlers cache them for an hour
-      ...['/swatch/:slug/card.png', '/combination/:n/card.png'].map((source) => ({
+      // Share cards and favicons are static files that only change on deploy
+      ...[
+        '/swatch/:slug/card.png',
+        '/combination/:n/card.png',
+        '/swatch/:slug/favicon.svg',
+        '/combination/:n/favicon.svg',
+      ].map((source) => ({
         source,
         headers: [{ key: 'Cache-Control', value: CARD_CACHE }],
       })),

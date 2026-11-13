@@ -3,6 +3,8 @@ import Document, { GlobalStyle } from '@/Document'
 import StyledComponentsRegistry from '@/lib/registry'
 import { WindowSizeProvider } from '@/state/WindowSize'
 import { siteOrigin } from '@/lib/origin'
+import { Favicon } from '@/components'
+import { COMBINATION_COUNT, colorSlugs } from '@/colors'
 
 export const metadata: Metadata = {
   // Absolute URLs in share metadata use the deployment's own origin
@@ -28,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <StyledComponentsRegistry>
           <WindowSizeProvider>
             <GlobalStyle />
+            <Favicon slugs={colorSlugs()} combinationCount={COMBINATION_COUNT} />
             <Document>{children}</Document>
           </WindowSizeProvider>
         </StyledComponentsRegistry>
