@@ -65,4 +65,4 @@
 ## 5. Docs and release
 
 - [x] 5.1 Update `CLAUDE.md` (the beta architecture section): describe the icon routes, `src/icons/`, the `<Favicon>` component in the layout, the random pick and its fallback, and why the routes are named `favicon.svg`. Update the `verify:routes` command description. Verify that the text matches the code.
-- [ ] 5.2 Open a PR. After it is merged and deployed, run `verify:routes` against `https://sanzo-wada.dmbk.io` and check that it passes. Also repeat the browser check from 3.3 on production.
+- [x] 5.2 Open a PR. After it is merged and deployed, run `verify:routes` against `https://sanzo-wada.dmbk.io` and check that it passes. Also repeat the browser check from 3.3 on production.
